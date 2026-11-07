@@ -67,3 +67,14 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 }
 :root { --mk-ink: #17181a; --mk-muted: #5f6368; --mk-line: #e7e7e4; --mk-soft: #f4f4f2; }
 
+/* placement inside a card's panel: top-centred, cut by the panel's foot behind a short fade */
+.mk-place {
+  position: absolute; z-index: 1; left: 50%; top: 32px; transform: translateX(-50%);
+  width: min(100% - 48px, var(--mk-w, 460px));
+  -webkit-mask-image: linear-gradient(#000 calc(100% - 64px), transparent);
+          mask-image: linear-gradient(#000 calc(100% - 64px), transparent);
+  bottom: 0;
+}
+.mk-place--phone { --mk-w: 272px; }
+.mk-place--win { --mk-w: 520px; }
+
