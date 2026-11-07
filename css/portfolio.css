@@ -20,3 +20,28 @@ html[data-theme="light"] {
 }
 html[data-theme="dark"] { color-scheme: dark; }
 
+/* one square control beside the main button, the secondary button's outline (one control look) */
+.theme-toggle {
+  position: relative; display: inline-grid; place-items: center; flex: none;
+  width: 44px; height: 44px; padding: 0; border-radius: var(--r-btn);
+  border: 1px solid var(--line-strong); background: var(--bg); color: var(--ink); cursor: pointer;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.theme-toggle:hover { background: color-mix(in oklab, var(--bg) 92%, var(--ink)); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
+.theme-toggle:active { transform: translateY(1px) scale(.97); }
+.theme-toggle svg { grid-area: 1 / 1; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle__moon { fill: currentColor; stroke: none; }
+/* the words show only in the phone sheet, where the control is a full-width row */
+.theme-toggle__text { display: none; }
+.nav.is-open .theme-toggle__text { display: inline; }
+/* the icon shows the theme you switch to */
+html[data-theme="dark"] .theme-toggle__moon,
+html[data-theme="light"] .theme-toggle__sun { display: none; }
+/* the kit hides every action but the main button in the tablet and phone bar; the toggle stays */
+@media (max-width: 1023px) {
+  .nav:not(.is-open) .nav__actions > .theme-toggle { display: inline-grid; }
+  .nav.is-open .nav__actions .theme-toggle { width: 100%; height: 48px; display: inline-flex; gap: var(--s-2); justify-content: center; font-weight: 500; }
+  .nav.is-open .theme-toggle svg { grid-area: auto; }
+}
+@media (max-width: 639px) { .nav__actions { gap: var(--s-2); } }
+
