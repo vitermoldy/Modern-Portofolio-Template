@@ -1,0 +1,9 @@
+# checker output (screenshots and reports)
+shots/
+.taste-skill/
+
+# local agent tooling: the installed skills and their pointers
+.claude/
+.agents/
+CLAUDE.md
+skills-lock.json
