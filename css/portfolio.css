@@ -240,3 +240,5 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 .about-initials { font: var(--display-weight) clamp(96px, 12vw, 200px)/1 var(--font-display); letter-spacing: -0.05em; color: var(--ground-ink); opacity: .82; }
 @media (max-width: 1023px) { .about-col { gap: var(--s-5); } }
 
+.nowrap { white-space: nowrap; }
+
