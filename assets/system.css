@@ -203,3 +203,172 @@ p { text-wrap: pretty; }
 .grid > * { min-width: 0; grid-column: 1 / -1; }
 .section { padding-block: var(--section); }
 
+/* ---------------------------------------------------------------- one section per screen
+   The page is a stack of screens. Framed at scrollY = k x the screen height, a shot shows exactly one
+   section: the hero alone on the first screen, every other section (and footer.closing, the close and
+   the footer in one) exactly one or two screens tall, its h2 first, --padt under its top. Heights
+   and padding do it: no pinning, snapping or script.
+     <section class="section" id=".." style="--h: 2">     (2 screens; --hm sets a phone's count alone)
+       <div class="wrap"> the h2 first, then the content </div>     (the one in-flow child)
+     </section>
+   A layer (a full-bleed photograph or ground behind the words) is an <img class="layer" aria-hidden="true">
+   beside the .wrap. Content must fit: one screen holds 708px of content at 1440x900 (900 - 120 - 72),
+   two hold 1,608 (the second screen's part starts --padt under its top with .g2). From 640 to 1279 a
+   section keeps at least its screens and grows past them rather than overlap the next. */
+main > :is(section, .section), footer.closing {
+  position: relative; box-sizing: border-box;
+  height: calc(var(--h, 1) * 100vh); height: calc(var(--h, 1) * 100svh);
+  padding: var(--padt) 0 calc(var(--padb) + var(--bar));
+}
+main > :is(section, .section) > :is(.wrap, .container), footer.closing > .wrap { position: relative; z-index: 1; height: 100%; }
+main > :is(section, .section) > :is(.wrap, .container):not(.grid) { display: flex; flex-direction: column; }
+/* a .wrap that is the section's grid too (class="wrap grid"): its rows start at the top */
+main > :is(section, .section) > :is(.wrap, .container).grid { align-content: start; }
+/* .fill: the block that takes what the screen leaves under the heading (a photograph, a frame) */
+main > :is(section, .section) > .wrap > .fill { flex: 1 1 0; min-height: 0; }
+/* two screens as two groups: row 1 the h2 and the first group, row 2 the rest (no second h2), starting
+   --padt under the second screen's top, so the second shot looks like any other section */
+main > :is(section, .section).g2, footer.closing.g2 { --h: 2; }
+main > :is(section, .section).g2 > :is(.wrap, .container), footer.closing.g2 > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
+main > :is(section, .section).g2 > :is(.wrap, .container) > *, footer.closing.g2 > .wrap > * { min-height: 0; align-self: start; }
+main > :is(section, .section).g2 > :is(.wrap, .container) > :is(.group, .fill) { align-self: stretch; }
+/* a group: one screen's part of a .g2 section (its h2 and first rows, or the rest) */
+.group { display: flex; flex-direction: column; min-height: 0; }
+/* each screen's card row runs down to that screen's foot (the cards stretch, their panels grow), so
+   the second screen of a .g2 is never a short row over an empty ground; both rows end on the same line */
+@media (min-width: 1024px) {
+  main > :is(section, .section).g2 > .wrap > .grid:last-child,
+  main > :is(section, .section).g2 > .wrap > .group > .grid:last-child { align-self: stretch; flex: 1 1 auto; min-height: 0; }
+}
+.group > .fill { flex: 1 1 0; min-height: 0; }
+@media (min-width: 640px) and (max-width: 1279px) {
+  main > :is(section, .section):not(.hero, .section--hero), footer.closing {
+    height: auto; min-height: calc(var(--h, 1) * 100vh); min-height: calc(var(--h, 1) * 100svh);
+  }
+  /* the section is a column and its .wrap takes all of it, so a .fill (a photograph, a frame) still
+     grows to the section's foot (a min-height percentage would not resolve, leaving it at its least) */
+  main > :is(section, .section):not(.hero, .section--hero), footer.closing { display: flex; flex-direction: column; }
+  main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { flex: 1 0 auto; height: auto; min-height: 0; }
+}
+/* a phone: lvh (the screen with its bars hidden) for every section but the hero; --hm when stacking
+   makes the content taller than the desktop count */
+@media (max-width: 639px) {
+  main > :is(section, .section):not(.hero, .section--hero), footer.closing {
+    height: calc(var(--hm, var(--h, 1)) * 100vh); height: calc(var(--hm, var(--h, 1)) * 100lvh);
+  }
+  main > :is(section, .section).g2m, footer.closing.g2m { --hm: 2; }
+  main > :is(section, .section).g2m > :is(.wrap, .container), footer.closing.g2m > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
+  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) { display: flex; row-gap: 0; }
+  main > :is(section, .section).g2:not(.g2m) > :is(.wrap, .container) > * { align-self: stretch; }
+}
+/* a layer: the photograph or ground of a whole section, under its words, edge to edge */
+main > :is(section, .section) > :is(img, video, canvas, picture).layer,
+footer.closing > :is(img, video, canvas, picture).layer {
+  position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%);
+}
+main > :is(section, .section) > picture.layer > img { width: 100%; height: 100%; object-fit: cover; }
+
+/* the hero: exactly the first screen, the fixed header over its top. Its words start --hgap under the
+   header (--photo adds a full-bleed photograph's height above them on a place); its content ends
+   --hpadb above the fold, and nothing of the next section shows, at 1440, 1024, 820 and 390.
+     <section class="hero hero--<type>"><div class="wrap"><div class="hero-text"> .. </div>[one strip]</div></section>
+   .hero-text holds the whole composition (the words, and the picture or window beside or under them);
+   one docked strip (logos, three facts) may follow it, at most 96px, desktop only. */
+main > :is(.hero, .section--hero) {
+  height: 100vh; height: 100svh; min-height: 0;
+  padding: calc(var(--nav) + var(--photo, 0px) + var(--hgap)) 0 calc(var(--hpadb) + var(--bar));
+}
+:is(.hero, .section--hero) > .wrap { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-7); }
+:is(.hero, .section--hero) > .wrap > .hero-text { min-height: 0; }
+:is(.hero, .section--hero) > .wrap > .hero-strip { grid-row: 2; max-height: 96px; }
+@media (max-width: 639px) { :is(.hero, .section--hero) > .wrap > .hero-strip { display: none; } }
+.section--hero .section-head { max-width: 860px; }
+/* the starter's own hero (hero-split): the words on span-5 top-aligned, the picture on span-6 start-7
+   as tall as the hero's content box (at most 716 at 1440x900); a phone stacks words, then the picture
+   in what is left */
+.hero-text.hero-split { height: 100%; align-items: stretch; }
+.hero-split > .hero-copy { align-self: start; }
+.hero-split > .hero-visual { position: relative; min-height: 0; height: 100%; }
+@media (max-width: 1023px) {
+  .hero-text.hero-split { display: flex; flex-direction: column; gap: var(--s-6); }
+  .hero-split > .hero-visual { flex: 1 1 0; min-height: 200px; height: auto; }
+}
+.hero-copy > * + * { margin-top: var(--s-5); }
+/* the h1 first in the words' column: its capitals start on the picture's top line, not the line box's
+   (the leading above the capitals would put the words about 12px under the photograph's top) */
+.hero-copy > h1:first-child { text-box: trim-start cap alphabetic; }
+.hero-copy > .btn-row { margin-top: var(--s-6); }
+/* three short facts at the foot of the words' column, on the picture's bottom line (no dead space
+   under the buttons): <dl class="hero-facts"><div><dt>..</dt><dd>..</dd></div> x3</dl> */
+@media (min-width: 1024px) {
+  .hero-split > .hero-copy { height: 100%; display: flex; flex-direction: column; }
+  .hero-split > .hero-copy > .hero-facts { margin-top: auto; }
+}
+.hero-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5) var(--gutter); margin: 0; }
+.hero-facts > div { display: grid; gap: var(--s-1); align-content: start; }
+.hero-facts dt { font-size: var(--t-small); color: var(--muted); }
+.hero-facts dd { margin: 0; font-weight: 500; }
+@media (max-width: 1023px) { .hero-facts { display: none; } }
+/* a notice line above the h1 (changed hours, a delivery cut-off): one line with a number, static,
+   starting on the left line like the h1 under it */
+.hero-notice { font-size: var(--t-small); font-weight: 500; color: var(--ink); }
+.hero-notice b, .hero-notice strong { font-weight: 500; color: var(--accent); }
+.hero-copy > .hero-notice + h1 { margin-top: var(--s-5); }
+
+/* a phone: open tiles from a row of three or four (rooms, goods, beans) go two-up, an odd last one
+   across the row, so a row of three fits one 844px screen (stacked one under another they need two) */
+@media (max-width: 639px) {
+  .grid > .tile:is(.span-3, .span-4) { grid-column: auto / span 6; }
+  .grid > .tile:is(.span-3, .span-4):nth-child(odd of .tile):nth-last-child(1 of .tile) { grid-column: 1 / -1; }
+  .grid > .tile:is(.span-3, .span-4) .tile__head { flex-wrap: wrap; gap: 0 var(--s-2); }
+}
+/* a phone: open cards (words on the ground, the panel under them) stacked one under another keep 32px
+   between a panel's foot and the next card's title, so a title never reads as the panel's caption */
+@media (max-width: 639px) { .grid:has(> .card--open) { row-gap: var(--s-6); } }
+/* spans: desktop >= 1024. Tablet 640-1023: text cards on span-3 and span-6 go two-up; cards with a
+   panel (a visual needs the width; the one exception is a span-6 pair, below)
+   and everything else (split text and visuals, span-4 cards, span-5/7/8 blocks) take the full row, so a split stacks and no row is left half empty. Phone < 640: one column. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .grid > .card.span-3:not(:has(> .panel)), .grid > .card.span-6:not(:has(> .panel)) { grid-column: auto / span 6; }
+  /* the one exception with a panel: a 2x2 (or a pair) of span-6 cards stays two-up from 720px (a panel
+     of about 310px and more, wide enough for a kit fragment), so four cards take one or two screens
+     at 768-820 instead of a card per row (four stacked panels run past two screens). Split cards and
+     every other span keep the full row. Under 720 a card per row. */
+  @media (min-width: 720px) {
+    .grid > .card.span-6:has(> .panel):not(.card--split) { grid-column: auto / span 6; }
+    .grid > .card.span-6:has(> .panel):not(.card--split):nth-child(odd of .card.span-6):nth-last-child(1 of .card.span-6) { grid-column: 1 / -1; }
+  }
+  /* open tiles (rooms, models, people, a photo pair) go two-up; an odd last one takes the row */
+  .grid > .tile:is(.span-3, .span-4, .span-6) { grid-column: auto / span 6; }
+  .grid > .tile:is(.span-3, .span-4, .span-6):nth-child(odd of .tile):nth-last-child(1 of .tile) { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .span-2  { grid-column: auto / span 2; }
+  .span-3  { grid-column: auto / span 3; }
+  .span-4  { grid-column: auto / span 4; }
+  .span-5  { grid-column: auto / span 5; }
+  .span-6  { grid-column: auto / span 6; }
+  .span-7  { grid-column: auto / span 7; }
+  .span-8  { grid-column: auto / span 8; }
+  .span-9  { grid-column: auto / span 9; }
+  .span-10 { grid-column: auto / span 10; }
+  .span-12 { grid-column: auto / span 12; }
+  .start-1 { grid-column-start: 1; } .start-2 { grid-column-start: 2; } .start-3 { grid-column-start: 3; }
+  .start-5 { grid-column-start: 5; } .start-6 { grid-column-start: 6; } .start-7 { grid-column-start: 7; }
+  .start-4 { grid-column-start: 4; } .start-8 { grid-column-start: 8; } .start-9 { grid-column-start: 9; }
+  .start-10 { grid-column-start: 10; }
+  /* a split is top-aligned: the words' first line and the picture's top on one line (never centred
+     against each other, never mirrored: text left, the visual right, on every split of the page) */
+  .grid--middle, .grid--top { align-items: start; }
+}
+/* card rows: every card in a row the same height (a plain .grid stretches them) */
+.grid:is(.grid--middle, .grid--top) > .card { align-self: stretch; }
+/* 1024-1279: a span-4 card's panel would be about 220px wide, too narrow for real UI. Cards with a
+   panel on span-4 go two-up, a span-8 one takes the row, and an odd last one takes the row too
+   (steps, proof row: two, then one wide; bento: the wide card, then the four small ones two by two) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .grid > .card.span-4:has(> .panel) { grid-column: auto / span 6; }
+  .grid > .card.span-8:has(> .panel),
+  .grid > .card.span-4:has(> .panel):nth-child(odd of .card.span-4):nth-last-child(1 of .card.span-4) { grid-column: 1 / -1; }
+}
+
