@@ -218,6 +218,49 @@
     </div>
   </section>
 
+  <!-- PROCESS: the dark band of the page (in light mode it turns dark, in dark mode light) -->
+  <section class="section ground-inverse" id="process" aria-labelledby="process-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="process-h">The process. <span class="muted">One person from the first sketch to the release.</span></h2>
+      </div>
+      <div class="grid grid--top fill">
+        <ol class="rows span-6 process-rows">
+          <li><span class="rows__name">Scope</span><p>We agree on the problem, the users and what done means.</p><span class="rows__value">A one-page brief</span></li>
+          <li><span class="rows__name">Design</span><p>Flows and screens in Figma, tested as a clickable prototype.</p><span class="rows__value">Figma file</span></li>
+          <li><span class="rows__name">Build</span><p>Responsive, accessible front-end, shipped in small pull requests.</p><span class="rows__value">Repository</span></li>
+          <li><span class="rows__name">Launch</span><p>Release, watch real use, fix what people trip over.</p><span class="rows__value">Live product</span></li>
+        </ol>
+        <div class="frame frame--fill mk-ground span-6 start-7 process-visual" role="img" aria-label="The same button shown as Figma properties on the left and as CSS on the right">
+          <div class="mk-handoff ui ui-mock" aria-hidden="true">
+            <div class="mk-inspect">
+              <p class="mk-inspect__head">Button / Primary</p>
+              <div class="mk-inspect__preview"><span>Pay invoice</span></div>
+              <dl>
+                <div><dt>Fill</dt><dd><i style="--c:#2b59c3"></i>blue-600</dd></div>
+                <div><dt>Height</dt><dd>44</dd></div>
+                <div><dt>Padding</dt><dd>0, 24</dd></div>
+                <div><dt>Radius</dt><dd>999</dd></div>
+                <div><dt>Text</dt><dd>Figtree 16 / 500</dd></div>
+              </dl>
+            </div>
+            <pre class="mk-code"><code><span class="k">.btn-primary</span> {
+  <span class="p">background</span>: var(<span class="v">--blue-600</span>);
+  <span class="p">height</span>: <span class="v">44px</span>;
+  <span class="p">padding</span>: <span class="v">0 24px</span>;
+  <span class="p">border-radius</span>: <span class="v">999px</span>;
+  <span class="p">font</span>: <span class="v">500 16px</span> var(<span class="v">--font-text</span>);
+}<span class="mk-code__extra">
+<span class="k">.btn-primary:focus-visible</span> {
+  <span class="p">outline</span>: <span class="v">2px solid</span> var(<span class="v">--blue-600</span>);
+  <span class="p">outline-offset</span>: <span class="v">2px</span>;
+}</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 
