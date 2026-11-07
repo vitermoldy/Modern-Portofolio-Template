@@ -27,6 +27,24 @@
     });
   }
 
+  // mark the nav link of the section on screen: the one crossing the middle of the viewport
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav__links a[href^="#"]'));
+  var targets = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  if ('IntersectionObserver' in window && targets.every(Boolean)) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = links[targets.indexOf(entry.target)];
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.removeAttribute('aria-current'); });
+          link.setAttribute('aria-current', 'true');
+        } else if (link.getAttribute('aria-current') === 'true') {
+          link.removeAttribute('aria-current');
+        }
+      });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    targets.forEach(function (t) { io.observe(t); });
+  }
+
   var year = document.querySelector('[data-year]');
   if (year) year.textContent = String(new Date().getFullYear());
 })();
