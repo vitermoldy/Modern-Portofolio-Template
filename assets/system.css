@@ -602,3 +602,173 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .loop-pause svg { width: 14px; height: 14px; fill: currentColor; }
 @media (prefers-reduced-motion: reduce) { .loop-pause { display: none; } }
 
+/* ---------------------------------------------------------------- navigation */
+/* The header: fixed, opaque, one hairline under it, the same at every depth (no blur, no shadow, no
+   floating pill, never hidden on scroll). Its .wrap is the page's, so the logo starts on the left line
+   and the main button ends on the right one. Plain words, 15px, sentence case; one filled button. */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 50; height: var(--nav);
+  background: var(--bg); color: var(--ink); border-bottom: 1px solid var(--line);
+}
+.nav__bar { height: 100%; display: flex; align-items: center; gap: var(--s-8); }
+/* a text logo: the display face at 500, 22px (the client's SVG logo replaces it when there is one) */
+.nav__logo { display: inline-flex; align-items: center; gap: var(--s-2); font: 500 22px/1 var(--font-display); letter-spacing: -0.02em; flex: none; }
+@media (max-width: 639px) { .nav__logo { font-size: 20px; } }
+.nav__logo svg, .nav__logo img { height: 24px; width: auto; }
+/* the brand's mark beside its name, in the accent (the client's logo replaces both). Dealt shapes:
+   <span class="mark" data-mark="dots|arc|ring|petal|leaf|stack" aria-hidden="true"></span> */
+.mark { display: inline-block; flex: none; width: 22px; height: 22px; background: var(--accent);
+        -webkit-mask: var(--mark) center / contain no-repeat; mask: var(--mark) center / contain no-repeat; }
+.mark[data-mark="dots"]  { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='6.5' cy='6.5' r='4.5'/%3E%3Ccircle cx='17.5' cy='6.5' r='4.5'/%3E%3Ccircle cx='6.5' cy='17.5' r='4.5'/%3E%3Crect x='13' y='13' width='9' height='9' rx='1.5'/%3E%3C/svg%3E"); }
+.mark[data-mark="arc"]   { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2.5 21.5V12a9.5 9.5 0 0 1 19 0v9.5h-6V12a3.5 3.5 0 0 0-7 0v9.5z'/%3E%3C/svg%3E"); }
+.mark[data-mark="ring"]  { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 5.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z'/%3E%3C/svg%3E"); }
+.mark[data-mark="petal"] { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='6.6' r='5'/%3E%3Ccircle cx='17.4' cy='12' r='5'/%3E%3Ccircle cx='12' cy='17.4' r='5'/%3E%3Ccircle cx='6.6' cy='12' r='5'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E"); }
+.mark[data-mark="leaf"]  { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 21C3 10 10 3 21 3c0 11-7 18-18 18z'/%3E%3C/svg%3E"); }
+.mark[data-mark="stack"] { --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='2.5' width='20' height='5.5' rx='2.75'/%3E%3Crect x='2' y='9.25' width='14' height='5.5' rx='2.75'/%3E%3Crect x='2' y='16' width='8' height='5.5' rx='2.75'/%3E%3C/svg%3E"); }
+/* initial: the name's first letter on a small accent tile (<span class="mark mark--initial" aria-hidden="true">K</span>);
+   wordmark: no mark, the name alone */
+.mark.mark--initial { -webkit-mask: none; mask: none; display: inline-grid; place-items: center; border-radius: calc(var(--r-sm) * 0.75);
+  color: var(--accent-ink); font: var(--display-weight, 400) 13px/1 var(--font-display); letter-spacing: 0; }
+.footer__mark .mark, .footer .nav__logo .mark { width: 0.8em; height: 0.8em; margin-right: 0.18em; vertical-align: -0.04em; }
+.footer__mark .mark--initial, .footer .nav__logo .mark--initial { width: 1em; height: 1em; font-size: 0.6em; }
+.nav--split .nav__logo .mark--initial { width: 26px; height: 26px; font-size: 15px; }
+.nav__links { display: flex; align-self: stretch; gap: var(--s-1); flex: 1; min-width: 0; }
+.nav__item { display: flex; align-items: center; height: 100%; }
+.nav__link {
+  position: relative; display: inline-flex; align-items: center; gap: var(--s-1); height: 36px; padding: 0 var(--s-3); border-radius: var(--r-sm);
+  font-size: 15px; font-weight: 500; color: var(--ink); white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+/* a small laptop (1024-1279): the words sit closer, so a bar of four words never wraps or reaches the logo */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .nav__bar { gap: var(--s-6); }
+  .nav__link { padding: 0 var(--s-2); }
+  .nav__link::before, .nav__link[aria-current="page"]::after { left: var(--s-2); right: var(--s-2); }
+  .nav__links { gap: 0; }
+}
+/* the words take no pill or fill (ST-08, ST-11): a 2px line draws under the word from the left on hover and focus and leaves to the right */
+.nav__link::before { content: ""; position: absolute; left: var(--s-3); right: var(--s-3); bottom: -2px; height: 2px; border-radius: 2px; background: currentColor;
+  transform: scaleX(0); transform-origin: right; transition: transform var(--dur) var(--ease); pointer-events: none; }
+.nav__link:hover::before, .nav__link:focus-visible::before, .nav__item:hover > .nav__link::before, .nav__item:focus-within > .nav__link::before { transform: scaleX(1); transform-origin: left; }
+.nav__actions > .nav__link::before { left: var(--s-2); right: var(--s-2); }
+.nav__link .chev { width: 12px; height: 12px; opacity: .6; transition: transform var(--dur) var(--ease); }
+/* the page you are on: a 2px bar under its word (still, the same inset as the hover line) */
+.nav__link[aria-current="page"]::after { content: ""; position: absolute; left: var(--s-3); right: var(--s-3); bottom: -2px; height: 2px; border-radius: 2px; background: currentColor; }
+.nav__expand { display: none; }
+.nav__actions { display: flex; align-items: center; gap: var(--s-4); flex: none; }
+/* the bar's button: the page's primary at the one button height (44, 48 with data-buttons="block"; ST-09) */
+.nav__actions .btn { height: var(--btn-h); padding-inline: var(--s-5); font-size: 15px; }
+.nav__actions > .nav__link { padding-inline: var(--s-2); }
+.nav__toggle { display: none; }
+
+.nav__menu {
+  position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); color: var(--ink);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: var(--s-7) 0 var(--s-8); opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity 120ms var(--ease), transform 120ms var(--ease), visibility 0s linear 120ms;
+}
+@media (min-width: 1024px) {
+  /* hover opens the full-width panel after 150ms of intent; a click on the word goes to its page */
+  .nav__item:hover > .nav__menu, .nav__item:focus-within > .nav__menu {
+    opacity: 1; visibility: visible; transform: none; transition-duration: 200ms, 200ms, 0s; transition-delay: 150ms, 150ms, 150ms;
+  }
+  .nav__item:hover > .nav__link .chev, .nav__item:focus-within > .nav__link .chev { transform: rotate(180deg); }
+}
+.menu-col { display: grid; gap: var(--s-2); align-content: start; }
+.menu-col > .t-label { color: var(--muted); margin-bottom: var(--s-2); }
+.menu-col a { display: grid; gap: var(--s-1); padding: var(--s-2) 0; font-weight: 500; }
+.menu-col a span { font-weight: 400; color: var(--muted); font-size: var(--t-small); }
+.menu-col a:hover { color: var(--action); }
+.menu-card { display: grid; gap: var(--s-3); }
+.menu-card .panel { --ratio: 56.25%; }
+
+@media (max-width: 1023px) {
+  .nav__links, .nav__actions { display: none; }
+  /* the menu button takes the secondary button's look on a 44px tap area */
+  .nav__toggle {
+    display: inline-grid; place-items: center; margin-left: auto; width: 44px; height: 44px; border-radius: var(--r-btn);
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; flex: none;
+  }
+  .nav.is-open .nav__links {
+    display: flex; flex-direction: column; position: fixed; top: var(--nav); left: 0; right: 0; bottom: 0;
+    padding: var(--s-4) var(--gut) calc(var(--btn-h) * 2 + 56px); background: var(--bg); overflow-y: auto; gap: 0;
+  }
+  .nav.is-open .nav__item { display: grid; grid-template-columns: 1fr auto; height: auto; border-bottom: 1px solid var(--line); }
+  .nav.is-open .nav__link { height: 56px; padding: 0; font-size: 20px; background: none; }
+  .nav.is-open .nav__link[aria-current="page"]::after { left: 0; right: auto; width: 24px; bottom: 10px; }
+  .nav.is-open .nav__link::before { display: none; }
+  .nav.is-open .nav__link .chev { display: none; }
+  .nav.is-open .nav__expand {
+    display: inline-grid; place-items: center; width: 44px; height: 56px; border: 0; background: none; color: var(--ink); cursor: pointer;
+  }
+  .nav__expand svg { width: 16px; height: 16px; transition: transform var(--dur) var(--ease); }
+  .nav__item.is-expanded .nav__expand svg { transform: rotate(180deg); }
+  .nav.is-open .nav__menu {
+    position: static; grid-column: 1 / -1; display: none; opacity: 1; visibility: visible; transform: none;
+    box-shadow: none; border: 0; padding: 0 0 var(--s-4);
+  }
+  .nav.is-open .nav__item.is-expanded .nav__menu { display: block; }
+  .nav.is-open .nav__menu :is(.container, .wrap) { width: 100%; }
+  .nav.is-open .nav__menu .grid { row-gap: var(--s-4); }
+  /* menu cards become plain rows in the sheet (their title and line), the picture panel hidden */
+  .nav.is-open .menu-card { display: grid; gap: var(--s-1); padding: var(--s-2) 0; }
+  .nav.is-open .menu-card .panel { display: none; }
+  .nav.is-open .nav__actions {
+    display: grid; gap: var(--s-2); position: fixed; left: 0; right: 0; bottom: 0; z-index: 51;
+    padding: var(--s-4) var(--gut) calc(var(--s-4) + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line);
+  }
+  .nav.is-open .nav__actions .btn { width: 100%; height: 48px; font-size: var(--t-body); }
+  /* a text action (Sign in, a phone line) under the buttons, centred at their height */
+  .nav.is-open .nav__actions .nav__link { display: inline-flex; order: 2; justify-content: center; height: var(--btn-h); font-size: var(--t-body); }
+  body.nav-locked { overflow: hidden; }
+}
+/* a tablet and a phone (1023 and below, ST-15): the main button stays in the bar, at the right line
+   with the menu button 12px after it; the plain words go to the sheet */
+@media (max-width: 1023px) {
+  .nav__bar { gap: var(--s-3); }
+  .nav:not(.is-open) .nav__actions { display: flex; margin-left: auto; }
+  .nav:not(.is-open) .nav__actions > :not(.btn--primary) { display: none; }
+  .nav:not(.is-open) .nav__actions + .nav__toggle { margin-left: 0; }
+}
+@media (max-width: 639px) {
+  /* a long name (15 characters, "Verdigris Works"), the main button and the menu button fit 342px (390 wide) on
+     one line each, with no page CSS: the name steps down with the screen (18px at 390), the button is the small
+     size, and the three sit 8px apart. A name of 17 characters or more is the client's to shorten to its mark. */
+  .nav__bar { gap: var(--s-2); }
+  .nav__logo { font-size: clamp(16px, 4.6vw, 20px); gap: 6px; white-space: nowrap; }
+  .nav__logo .mark:not(.mark--initial) { width: 20px; height: 20px; }
+  .nav:not(.is-open) .nav__actions .btn { height: 44px; padding-inline: var(--s-3); font-size: var(--t-small); }
+}
+/* no script: the sheet cannot open, so the words stay in the bar (it scrolls sideways) and the dead menu button goes */
+@media (scripting: none) and (max-width: 1023px) {
+  .nav__links { display: flex; overflow-x: auto; scrollbar-width: none; margin-right: var(--s-3); padding-right: var(--s-2); border-right: 1px solid var(--line); }   /* stops short of the button, and a hairline marks where the row is cut (it scrolls) */
+  .nav__toggle { display: none; }
+}
+
+/* nav types (dealt, sections.md). Every one is the same fixed bar on the page's .wrap; the full-width
+   hover panel on a desktop and the full-screen sheet on a phone are shared, so only the bar's order
+   and its panel's contents differ.
+   (default) nav-mega: the logo, the words 64px right of it, the actions at the right line; the panel
+              holds two or three link columns and one picture card (Figma)
+   nav-cards: the same bar; its panel holds three or four picture cards (a.menu-card, span-4 or span-3)
+   .nav--centre: the words in the middle of the bar (Linear, Vercel)
+   .nav--split: the words left, the name in the middle, the actions right (shops, hotels, restaurants)
+   .nav--tone: the bar on the page's inverse ground, a band of colour over a light page (x.ai's black
+              bar); the panel under it stays on the page ground */
+@media (min-width: 1024px) {
+  .nav--split .nav__bar, .nav--centre .nav__bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .nav--split .nav__logo { grid-column: 2; grid-row: 1; font-size: 26px; }
+  .nav--split .nav__links { grid-column: 1; grid-row: 1; }
+  /* the first word starts on the left line (its box, its letters and its underline) */
+  .nav--split .nav__links > .nav__item:nth-child(1 of .nav__item) > .nav__link { padding-left: 0; }
+  .nav--split .nav__links > .nav__item:nth-child(1 of .nav__item) > .nav__link::before,
+  .nav--split .nav__links > .nav__item:nth-child(1 of .nav__item) > .nav__link[aria-current="page"]::after { left: 0; }
+  .nav--split .nav__actions, .nav--centre .nav__actions { grid-column: 3; grid-row: 1; justify-self: end; }
+  .nav--centre .nav__logo { grid-column: 1; grid-row: 1; justify-self: start; }
+  .nav--centre .nav__links { grid-column: 2; grid-row: 1; justify-content: center; flex: none; }
+}
+.nav--tone { --bg: var(--p-inv-bg); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted); --accent: var(--p-inv-accent); --accent-ink: var(--p-inv-accent-ink);
+             --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink); --card: var(--p-inv-surface);
+             --line: color-mix(in oklab, var(--p-inv-ink) 14%, transparent); --line-strong: color-mix(in oklab, var(--p-inv-ink) 26%, transparent); }
+.nav--tone .nav__menu { --bg: var(--p-bg); --ink: var(--p-ink); --muted: var(--p-muted); --action: var(--p-action); --line: color-mix(in oklab, var(--p-ink) 11%, transparent); }
+/* the older float type is the plain bar now (a floating, frosted pill is not a header) */
+
