@@ -153,3 +153,18 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 .mk-win--dark { background: #121315; color: #eceef0; --mk-line: #2a2c30; --mk-soft: #1b1c1f; --mk-muted: #9a9ea6; }
 .mk-win--dark .mk-win__bar i { background: #3a3c41; }
 
+/* dashboard */
+.mk-dash { padding: 18px; display: grid; gap: 16px; }
+.mk-dash__head { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+.mk-pill { height: 24px; padding: 0 10px; display: inline-grid; place-items: center; border-radius: 999px; border: 1px solid var(--mk-line); font-size: 11px; font-weight: 500; color: var(--mk-muted); }
+.mk-dash__kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.mk-dash__kpis div { display: grid; gap: 4px; padding: 12px; border-radius: 10px; background: var(--mk-soft); font-size: 11px; }
+.mk-dash__kpis small { font-size: 11px; color: var(--mk-muted); }
+.mk-dash__kpis b { font: 500 20px/1 var(--font-display); letter-spacing: -0.02em; }
+.mk-bars, .mk-bars__days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+.mk-bars { align-items: end; height: 150px; }
+.mk-bars__days { margin-top: -8px; }
+.mk-bars span { position: relative; height: calc(var(--v) * 100%); border-radius: 6px 6px 2px 2px; background: color-mix(in oklab, var(--mk-accent) 34%, #121315); transition: background-color 200ms; }
+.mk-bars span.is-on { background: var(--mk-accent); }
+.mk-bars__days i { text-align: center; font: 400 11px/1.4 var(--font-mono); font-style: normal; color: var(--mk-muted); }
+
