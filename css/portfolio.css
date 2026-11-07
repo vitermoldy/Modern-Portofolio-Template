@@ -233,3 +233,10 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 @media (max-width: 1023px) { .process-visual { padding: var(--s-5); } }
 @media (max-width: 639px) { .process-visual { padding: var(--s-4); } .mk-inspect { display: none; } .mk-code { font-size: 10.5px; line-height: 1.5; padding: 12px; } }
 
+.about-col { display: flex; flex-direction: column; gap: var(--s-7); }
+.about-lede { max-width: 46ch; }
+.tools { max-width: 52ch; }
+.about-photo { display: grid; place-items: center; }
+.about-initials { font: var(--display-weight) clamp(96px, 12vw, 200px)/1 var(--font-display); letter-spacing: -0.05em; color: var(--ground-ink); opacity: .82; }
+@media (max-width: 1023px) { .about-col { gap: var(--s-5); } }
+
