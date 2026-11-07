@@ -843,3 +843,168 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .faq :is(.faq__item, details) p { color: var(--ink); max-width: 64ch; }
 @media (max-width: 639px) { .faq > :is(.faq__item, details) { padding: var(--s-4) 0; } }
 
+/* ---------------------------------------------------------------- footer */
+.footer { padding-block: var(--section) var(--s-6); border-top: 1px solid var(--line); }   /* an older footer after the last section; footer.closing (below) replaces it */
+.footer .grid { row-gap: var(--s-7); }
+.footer h4 { font: 500 var(--t-small)/1.4 var(--font-text); letter-spacing: 0; color: var(--muted); margin-bottom: var(--s-4); }
+.footer ul { display: grid; gap: var(--s-3); font-size: var(--t-small); }
+.footer ul a:hover { color: var(--action); }
+.footer__legal { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); justify-content: space-between;
+                 margin-top: var(--s-8); padding-top: var(--s-5); border-top: 1px solid var(--line);
+                 font-size: var(--t-label); color: var(--muted); }
+.socials { display: flex; gap: var(--s-2); }
+.socials a { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink); }
+.socials a:hover { border-color: var(--line-strong); }
+.socials svg, .socials img, .socials .icon-mono { width: var(--icon); height: var(--icon); }
+/* a brand mark in the text colour (icons.mjs --mono prints these): the SVG is a mask, so it
+   follows currentColor on every ground. The mask image is set in the tag's style attribute. */
+.icon-mono { display: inline-block; flex: none; width: var(--icon); height: var(--icon); background: currentColor;
+             -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
+@media (max-width: 1023px) { .footer .footer__col { grid-column: auto / span 6; } .footer .grid > .span-4 { grid-column: 1 / -1; } }
+@media (min-width: 640px) and (max-width: 1023px) { .footer .footer__col { grid-column: auto / span 3; } }
+
+/* the company block's one line, set in the display face (footer-columns) */
+.footer__lede { font: var(--display-weight) var(--t-h3)/1.25 var(--font-display); letter-spacing: var(--display-tracking); max-width: 22ch; }
+/* the legal row's end: the socials sit right of the copyright line */
+.footer__legal .socials a { width: 32px; height: 32px; }
+
+/* footer types (dealt, sections.md).
+   .footer--dark (Figma, x.ai): a dark ground (with .ground-inverse), the name set large top left, the
+   link columns on the right. On a dark page it stays dark: a step darker than the page, a hairline
+   on top (system.js sets <html data-tone="dark">), never a light slab under a dark page. */
+.footer--dark { border-top: 0; padding-block: var(--section-band) var(--s-6); }   /* a change of ground: the gap a band gets */
+html[data-tone="dark"] .footer--dark {
+  --bg: color-mix(in oklab, var(--p-bg) 72%, #000); --surface: var(--p-surface); --ink: var(--p-ink); --muted: var(--p-muted);
+  --accent: var(--p-accent); --accent-ink: var(--p-accent-ink); --action: var(--p-action); --action-ink: var(--p-action-ink);
+  border-top: 1px solid var(--line);
+}
+.footer__mark { display: inline-flex; align-items: center; font: var(--display-weight) var(--t-h2)/1 var(--font-display); letter-spacing: var(--display-tracking); }
+/* .footer--visit (a place): the address set large with the way there, the hours beside it, then
+   one row of the nav's words; no third ask for the main action */
+.footer__address { font: var(--display-weight) var(--t-h2)/1.1 var(--font-display); letter-spacing: var(--display-tracking); font-style: normal; }
+.footer__nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-6); margin-top: var(--s-8); padding-top: var(--s-5); border-top: 1px solid var(--line); font-weight: 500; }
+.footer__nav a:hover { color: var(--action); }
+.footer__nav .socials { margin-left: auto; }
+.footer--visit .footer__legal { margin-top: var(--s-5); border-top: 0; padding-top: 0; }
+/* .footer--statement: the close and the footer in one inset slab on the page's lit ground (sand,
+   sky, sage or painting): one big line, one full-width button, then the columns */
+.footer--statement {
+  margin: 0; border: 0; border-radius: 0; padding-block: var(--s-10) var(--s-6);
+  background: var(--ground-bg); color: var(--ground-ink);
+  --bg: var(--ground-bg); --surface: var(--ground-surface); --ink: var(--ground-ink); --muted: var(--ground-muted);
+  --action: var(--ground-ink); --action-ink: var(--ground-surface); --accent: var(--ground-accent);
+  --line: color-mix(in oklab, var(--ground-ink) 14%, transparent); --line-strong: color-mix(in oklab, var(--ground-ink) 28%, transparent);
+}
+.footer--statement .cta-type { padding-bottom: var(--s-9); margin-bottom: var(--s-8); border-bottom: 1px solid var(--line); }
+@media (max-width: 639px) { .footer--statement:not(.closing) { padding-top: var(--s-9); } }
+/* opening hours: <dl class="hours" data-tz="Europe/Berlin">, one dt (its days: "Mon to Fri", "Sat and
+   Sun", or data-days="mon-fri") and one dd a row. system.js marks today's row .is-today in the venue's
+   time zone (never the visitor's clock); the labels are read, so they stay in ink */
+.hours { display: grid; grid-template-columns: auto 1fr; gap: var(--s-2) var(--s-5); font-variant-numeric: tabular-nums; }
+.hours dt { color: var(--ink); } .hours dd { margin: 0; }
+.hours .is-today { font-weight: 500; }
+.hours dt.is-today::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: var(--s-2); border-radius: 999px; background: var(--accent); vertical-align: 0.2em; }
+/* the visit block (a place, sections.md), on the container's lines. Open by default: the words on the page ground,
+   no box (a box as wide as the section on a ground of its own reads as a band to the rhythm check, and a phone's
+   padding moves its words off the left line). .visit--card is the panel on --g-alt for the full page, where it
+   stands in a split column beside the client's photograph: from 1024px up only, at most half the container,
+   48px inside; under 1024 it is open type again. .visit--cols is the short page's: address, hours and access as
+   three columns, then the menu as .rows under it in the same section.
+   Its head is the label "Visit" left and the open-now line right; under it the address column and the hours column 24
+   apart; under both at most two 44px rows (access, a guesthouse's check-in, "By appointment").
+   <section class="section" data-place="visit" aria-label="Visit"><div class="wrap"><div class="visit">
+     <div class="visit__head"><p class="t-label muted">Visit</p><p class="t-small" data-open-now></p></div>
+     <div class="visit__cols">
+       <div class="visit__col stack-4"><address class="visit__address">Street<br>District</address>
+         <a class="link" href="https://www.openstreetmap.org/search?query=..">Get directions</a></div>
+       <div class="visit__col"><dl class="hours" data-tz="Europe/Berlin"><dt>Mon to Fri</dt><dd>8 to 18</dd></dl></div>
+     </div>
+     <ul class="visit__rows"><li><span>Access</span><span>Step-free at the front door</span></li></ul>
+   </div></div></section> */
+.visit { display: grid; gap: var(--s-5); color: var(--ink); }
+.visit__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
+.visit__head > * { margin: 0; }
+.visit__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); row-gap: var(--s-5); }   /* the columns stretch to one height (row-lines) */
+.visit--cols .visit__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.visit__col { min-width: 0; }
+.visit__col > .t-label { margin-bottom: var(--s-3); color: var(--muted); }
+.visit__address { font: 400 20px/30px var(--font-text); font-style: normal; }
+.visit__rows { display: grid; margin: 0; padding: 0; list-style: none; }
+.visit__rows > li { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); min-height: 44px; border-top: 1px solid var(--line); }
+.visit__rows > li > :first-child { color: var(--muted); }
+.visit__rows > li > :last-child { text-align: right; }
+@media (min-width: 1024px) {
+  .visit--card { --bg: var(--p-surface); --surface: var(--p-bg); --card: var(--p-bg); background: var(--bg); border-radius: var(--r-lg); padding: var(--s-7); }
+}
+@media (max-width: 1023px) { .visit--cols .visit__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 639px) {
+  .visit__cols, .visit--cols .visit__cols { grid-template-columns: minmax(0, 1fr); }
+  .visit__address { font-size: 18px; line-height: 28px; }
+  .visit__rows > li { align-items: flex-start; flex-direction: column; justify-content: center; gap: 0; padding-block: var(--s-2); }
+  .visit__rows > li > :last-child { text-align: left; }
+}
+/* photo credits: one short line that opens the full list (copy.md), at the end of the legal row:
+   <details class="credits"><summary>Photographs via Unsplash and Wikimedia Commons</summary>
+   <p>one line a photograph, as photos.mjs credits prints them</p></details> */
+.credits { flex-basis: 100%; font-size: var(--t-label); color: var(--muted); }
+.credits > summary { display: inline; cursor: pointer; list-style: none; }
+.credits > summary::-webkit-details-marker { display: none; }
+.credits > summary::after { content: "Credits"; margin-left: var(--s-2); color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.credits[open] > summary::after { content: "Hide"; }
+.credits > :not(summary) { margin-top: var(--s-2); max-width: 110ch; }
+.credits a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+
+/* ---------------------------------------------------------------- footer.closing: the close and the footer, one screen
+   The page ends on one more section: <footer class="footer closing [footer--dark | footer--statement |
+   footer--visit]"> whose .wrap holds exactly two children, the close (.closing__cta, row 1, the
+   rest of the screen) and the links (.closing__links, row 2: the columns, then the legal row). The
+   close sits on the footer's own ground, so it is never a slab flush on a footer under it. Its three
+   looks (dealt, sections.md):
+     .close--photo  the h2 and the button on one head row, then the client's photograph across the
+                    .wrap down to the links (never the hero's photograph)
+     .close--type   the h2 and a line, then the big button across the .wrap (Figma's close)
+     .close--word   the name set across the .wrap in the display face under the h2 and the button
+   A phone stacks it in one screen; add .g2m when the links need a screen of their own. */
+footer.closing { border-top: 0; }
+footer.closing > .wrap { display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-8); }
+footer.closing.g2 > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+.closing__cta { min-height: 0; display: flex; flex-direction: column; gap: var(--s-6); }
+.closing__cta > .section-head--split, .closing__cta > .section-head { margin-bottom: 0; }
+.closing__cta h2 { max-width: 20ch; }
+.closing__cta > .close__media { flex: 1 1 0; min-height: clamp(120px, 18svh, 160px); position: relative; overflow: clip; border-radius: var(--r-lg); background: var(--surface); }
+.close__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%); }
+.closing__cta.close--type > .btn--xl { align-self: stretch; }
+/* the name across the .wrap: sized in layout.js-free CSS from the container (8 letters fill 1280) */
+.close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/.86 var(--font-display); letter-spacing: -0.045em;
+               white-space: nowrap; overflow: clip; color: var(--ink); }
+.closing__links { display: grid; gap: var(--s-7); }
+.closing__links > .footer__legal { margin-top: 0; }
+.closing__links .footer__lede { font-size: var(--t-lead); max-width: 30ch; }
+/* a phone: a close with a photograph takes a screen of its own (the photograph fills what the words
+   leave) and the links the next; a close in type stays one screen with its links */
+@media (max-width: 639px) {
+  footer.closing:has(> .wrap > .closing__cta > .close__media) { --hm: 2; }
+  footer.closing:has(> .wrap > .closing__cta > .close__media) > .wrap { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); row-gap: calc(var(--padt) + var(--padb) + var(--bar)); }
+  footer.closing:has(> .wrap > .closing__cta > .close__media) .closing__links { align-self: start; }
+}
+@media (max-width: 639px) {
+  footer.closing > .wrap { row-gap: var(--s-7); }
+  .closing__links { gap: var(--s-5); }
+  .closing__links > .grid { row-gap: var(--s-5); }
+  .closing__links .footer__col { grid-column: auto / span 6; }
+  .closing__cta > .close__media { min-height: 140px; }
+  .close__word { font-size: clamp(56px, 19vw, 96px); }
+}
+
+/* ---------------------------------------------------------------- the big close (closing-type) */
+/* the close starts on the left line like every other heading; the big button runs across the .wrap */
+.cta-type { display: grid; justify-items: start; gap: var(--s-6); text-align: left; }
+.cta-type h2 { max-width: 22ch; }
+/* the primary button at its one large size, once a page: 640px wide and centred; .btn--wide runs it
+   across the container (Figma's close), on a software page only (system.md) */
+.btn--xl { width: min(100%, 640px); height: clamp(64px, 1.4vw + 48px, 72px); font: var(--display-weight) clamp(20px, 0.6vw + 16px, 26px)/1 var(--font-display); letter-spacing: var(--display-tracking); }
+.btn--xl.btn--wide { width: 100%; height: clamp(64px, 3vw + 40px, 88px); font-size: clamp(22px, 0.95vw + 18px, 32px); justify-content: space-between; padding-inline: var(--s-7); }
+html[data-buttons] .btn--xl::after { width: 0.6em; height: 0.6em; }
+/* on a phone it is the page's own button at full width, one step taller, so the pair stays one look */
+@media (max-width: 639px) { .btn--xl, .btn--xl.btn--wide { width: 100%; height: 48px; font: 500 18px/1 var(--font-text); letter-spacing: 0; } }
+
