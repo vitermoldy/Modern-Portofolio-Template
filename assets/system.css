@@ -1008,3 +1008,214 @@ html[data-buttons] .btn--xl::after { width: 0.6em; height: 0.6em; }
 /* on a phone it is the page's own button at full width, one step taller, so the pair stays one look */
 @media (max-width: 639px) { .btn--xl, .btn--xl.btn--wide { width: 100%; height: 48px; font: 500 18px/1 var(--font-text); letter-spacing: 0; } }
 
+/* ---------------------------------------------------------------- photographs
+   .photo-band: one photograph (or film) and a few words. Three uses: the older photo hero
+   (.photo-band--hero.photo-band--bleed), one media band mid-page (rhythm media-band) and the close
+   (closing-photo). Nothing is laid over the photograph to make words readable: no scrim, gradient,
+   veil or blurred panel (PH-31, VI-49). From 640 the words stand in a solid box in the section's own
+   colours, lower left on the photograph (.photo-band--left: centred on the left side; --light is the
+   same box, kept for old markup). On a phone, and on a place at every width (a place photograph
+   carries no words), the photograph stands alone and the words go under it on the ground. */
+.photo-band { position: relative; isolation: isolate; overflow: clip; display: grid; align-items: end;
+              min-height: clamp(440px, 46vw, 720px); border-radius: var(--r-lg); background: var(--surface); }
+.photo-band--bleed { border-radius: 0; }
+.photo-band--hero { min-height: calc(100svh - var(--nav-h)); }
+/* the older photo hero first in main (layout/hero-photo.html replaces it): the first screen, under the fixed header */
+main > .photo-band--hero:first-child { height: 100svh; min-height: 0; }
+main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var(--nav) + var(--hgap)); }
+.photo-band > :is(img, video, picture) { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.photo-band > picture > img { width: 100%; height: 100%; object-fit: cover; }
+.photo-band__text { position: relative; display: grid; gap: var(--s-4); justify-items: start; color: var(--ink); }
+.photo-band__text > :is(h1, h2, p) { max-width: 18ch; }
+.photo-band__text > p { max-width: 44ch; font-size: var(--t-lead); }
+/* from 640: a solid box in the section's colours, 32px in from the photograph's lower-left corner;
+   on a full-bleed band it starts on the page's left line */
+@media (min-width: 640px) {
+  :root:not([data-type="place"]) .photo-band__text {
+    width: fit-content; max-width: min(560px, calc(100% - 2 * var(--s-6))); margin: var(--s-6);
+    padding: var(--s-6); background: var(--bg); border-radius: var(--r-md);
+  }
+  :root:not([data-type="place"]) .photo-band--bleed > .photo-band__text { margin: var(--s-8) max(var(--gut), (100% - var(--container)) / 2); }
+  :root:not([data-type="place"]) main > .photo-band--hero:first-child > .photo-band__text { margin-top: calc(var(--nav) + var(--hgap)); padding-top: var(--s-6); }
+  .photo-band--left { align-items: center; }
+}
+@media (max-width: 639px) {
+  .photo-band { display: block; min-height: 0; overflow: visible; background: none; border-radius: 0; }
+  .photo-band > :is(img, video, picture) { position: relative; inset: auto; height: auto; aspect-ratio: 4 / 5; border-radius: var(--r-lg); }
+  .photo-band--bleed > :is(img, video, picture) { border-radius: 0; }
+  .photo-band__text { padding: var(--s-5) 0 0; }
+  .photo-band--bleed > .photo-band__text { padding: var(--s-5) var(--pad) 0; }
+  .photo-band--hero > .photo-band__text { padding-bottom: var(--section); }
+  /* the hero's photograph grows to fill the first screen above its words */
+  .photo-band--hero { display: flex; flex-direction: column; min-height: calc(100svh - var(--nav-h)); }
+  .photo-band--hero > :is(img, video, picture) { flex: 1 0 0; min-height: 100vw; aspect-ratio: auto; object-fit: cover; }
+}
+:root[data-type="place"] .photo-band { display: flex; flex-direction: column; min-height: 0; overflow: visible; background: none; border-radius: 0; }
+:root[data-type="place"] .photo-band > :is(img, video, picture) { position: relative; inset: auto; flex: 1 1 auto; min-height: 0; height: auto; aspect-ratio: 4 / 3; }
+:root[data-type="place"] .photo-band__text { padding: var(--s-6) 0 0; }
+:root[data-type="place"] .photo-band--bleed > .photo-band__text { padding-inline: max(var(--gut), (100% - var(--container)) / 2); }
+
+/* .pl-photo: every single in-flow photograph on a place (visit, menu, story, booking, close; PH-80).
+   It keeps its ratio (--pl-r as a number: 1.3333 for 4:3, .8 for 4:5, 1 for 1:1) and its column, and
+   when the screen is short it gets shorter, narrowing from its column's outer edge (.pl-photo--end
+   for a photograph in the right-hand column). Square corners, nothing on it.
+     <figure class="pl-photo" style="--pl-r: .8"><img src=".." alt=".." loading="lazy"></figure> */
+:root { --pl-room: calc(100svh - var(--padt) - var(--padb) - var(--bar)); }
+.pl-photo { container-type: inline-size; margin: 0; min-width: 0; }
+.pl-photo > img, .pl-photo > picture > img {
+  display: block; aspect-ratio: var(--pl-r, 1.3333); width: auto; max-width: 100%;
+  height: min(calc(100cqw / var(--pl-r, 1.3333)), var(--pl-cap, calc(var(--pl-room) - var(--pl-head, 0px))));
+  object-fit: cover; object-position: var(--pos, 50% 50%); border-radius: var(--r-lg);
+}
+.pl-photo--end > img, .pl-photo--end > picture > img { margin-left: auto; }
+@media (max-width: 1023px) { .pl-photo > img, .pl-photo > picture > img { width: 100%; height: auto; } }
+
+/* .tile: an open tile, the picture on top and its words on the page ground under it, no box
+   (a room, a model, a person, a case). One --tile-ratio per row so the pictures line up. */
+.tile { display: grid; gap: var(--s-4); align-content: start; color: inherit; }
+.tile__media { position: relative; overflow: clip; aspect-ratio: var(--tile-ratio, 4 / 3); border-radius: var(--r-lg); background: var(--surface); }
+.tile__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
+a.tile:hover .tile__media > img { transform: scale(1.03); }   /* inside its mask; the tile never grows (motion.css has the same) */
+.tile--portrait { --tile-ratio: 4 / 5; }
+.tile--wide { --tile-ratio: 16 / 9; }
+.tile__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); }
+.tile__head > :is(h3, h4) { font: 500 var(--t-card)/1.3 var(--font-text); letter-spacing: -0.01em; }
+.tile__price { flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tile__facts { color: var(--muted); font-size: var(--t-small); margin-top: calc(-1 * var(--s-3)); }
+.tile > p { color: var(--ink); max-width: 52ch; }
+/* an object render or a drawing in a tile (line-up): on the lit ground, the object filling the tile */
+.tile__media:has(> [data-print], > .drawing) { display: grid; place-items: center; background: var(--ground-bg); }
+.tile__media > [data-print] { position: absolute; inset: 0; }
+.tile__media > .drawing { width: min(84%, calc(84% * var(--ar, 1.5))); }
+
+/* .drawing: a product with no photograph and no object of its kind, drawn (sections.md, the weak
+   case): one inline SVG in true proportions, its lines a fixed 1.5px at every size, one part in the
+   accent, dimension lines with their figures as HTML labels placed in percent of the figure.
+   <figure class="drawing" style="--ar: 1.6" role="img" aria-label="..">
+     <svg viewBox="0 0 1600 1000" aria-hidden="true">
+       <g class="part"><path class="fill" d=".."/><path class="ln" d=".."/></g>
+       <g class="dim"><path d="M100 960H1500"/><path d="M100 945v30M1500 945v30"/></g>
+     </svg>
+     <span class="drawing__dim" style="left: 50%; top: 96%">1,400 mm</span>
+   </figure>
+   In a frame it fits the frame whole (--ar: the viewBox's width over its height); a crop for a
+   feature section is the same SVG with the viewBox set round the part. */
+.drawing { position: relative; margin: 0; flex: none; aspect-ratio: var(--ar, 1.5); color: var(--ink); }
+.frame > .drawing { width: min(100%, calc(var(--ratio, 50%) * var(--ar, 1.5) * 0.86)); }
+/* a crop (a feature section's close-up of one part): it fills the frame and runs out of its edges,
+   <svg preserveAspectRatio="xMidYMid slice">, no figures on it */
+.frame > .drawing.drawing--crop { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; }
+.drawing > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.drawing :is(.ln, .fill, .acc, .dim) { vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
+.drawing .ln { fill: none; stroke: currentColor; stroke-width: 1.5; }
+.drawing .fill { fill: color-mix(in oklab, var(--ink) 6%, var(--bg)); stroke: currentColor; stroke-width: 1.5; }
+.drawing .acc { fill: var(--accent); stroke: currentColor; stroke-width: 1.5; }
+/* a dark part (a black steel frame, a rubber foot) solid in ink, its seams .ink-ln */
+.drawing .ink { fill: var(--ink); stroke: var(--ink); stroke-width: 1.5; }
+.drawing .ink-ln { fill: none; stroke: color-mix(in oklab, var(--bg) 45%, var(--ink)); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.drawing .dim, .drawing .dim * { fill: none; stroke: var(--muted); stroke-width: 1; }
+.drawing .part { pointer-events: bounding-box; }
+.drawing .part :is(.ln, .fill, .ink, .acc) { transition: stroke var(--dur) var(--ease), fill var(--dur) var(--ease); }
+@media (hover: hover) {
+  .drawing .part:hover :is(.ln, .fill) { stroke: var(--accent); }
+  .drawing .part:hover .fill { fill: color-mix(in oklab, var(--accent) 14%, var(--bg)); }
+  .drawing .part:hover .ink { fill: var(--accent); stroke: var(--accent); }
+}
+.drawing__dim { position: absolute; transform: translate(-50%, -50%); padding: 2px var(--s-2); border-radius: 999px;
+  background: var(--bg); color: var(--ink); font: 500 var(--t-label)/1.3 var(--font-text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 639px) {
+  .drawing__dim { font-size: var(--t-label); padding: 1px 6px; }
+  /* room for a figure at the drawing's edge, which keeps its 13px while the drawing shrinks */
+  .frame > .drawing:not(.drawing--crop) { width: min(84%, calc(var(--ratio, 50%) * var(--ar, 1.5) * 0.8)); }
+  /* a whole drawing (wider than tall) in a phone frame: the frame shortens to it, so a desk or a bike is
+     not a small line across a tall empty box (a hero stage still grows to the first screen) */
+  .frame:not(:has(> .frame__text)):has(> .drawing:not(.drawing--crop)) { --ratio: 80%; }
+}
+
+/* .peek: a list beside one photograph that changes to the row under the pointer (a place's or a
+   service's one moment: rooms, spaces, classes, services, the menu's kinds). system.js runs it:
+   <div class="grid grid--middle" data-peek>
+     <div class="frame frame--photo frame--portrait span-5">
+       <img class="frame__img" data-peek-for="garden" src=".." alt="..">
+       <img class="frame__img" data-peek-for="kitchen" src=".." alt=".." hidden> ...</div>
+     <ul class="rows span-6 start-7"><li data-peek-to="garden">..</li><li data-peek-to="kitchen">..</li></ul>
+   </div> */
+/* every row's words stay on the left line; the row on show darkens its rule to ink and marks its name
+   with a dot after it. The photograph swaps at once (MO-07). The list runs as tall as the photograph
+   (the row's two boxes match), its rows from the top. */
+[data-peek] > .rows { align-self: stretch; }
+[data-peek-to] { cursor: default; transition: border-color var(--dur) var(--ease); }
+[data-peek-to].is-on { border-bottom-color: var(--ink); }
+[data-peek-to] .rows__name::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-left: var(--s-2); vertical-align: .1em;
+  border-radius: 999px; background: var(--accent); opacity: 0; }
+[data-peek-to].is-on .rows__name::after { opacity: 1; }
+@media (max-width: 1023px) { [data-peek-to] .rows__name::after { display: none; } }
+/* a tablet shows the photograph under the list, full width: 5:4, not a portrait taller than the screen */
+@media (min-width: 640px) and (max-width: 1023px) { [data-peek] .frame--portrait { --ratio: 80%; } }
+
+/* .rows: a list read across, a name (and a line) left, a value right, hairlines between: a menu, a
+   price list, services with prices, specs, hours. Never cards for these. */
+.rows { border-top: 0; }   /* each row closes with its own rule; no rule above the first (ST-43) */
+.rows > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1) var(--s-5); padding-block: var(--s-4); border-bottom: 1px solid var(--line); }
+/* no rule above the first row, so no padding either: its words start on the line beside it (a photograph's top) */
+.rows > li:first-child { padding-top: 0; }
+.rows__name { font-weight: 500; }
+.rows__value { grid-column: 2; grid-row: 1; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rows > li > p { grid-column: 1; color: var(--ink); max-width: 56ch; }
+.rows--spec .rows__name { font-weight: 400; color: var(--muted); }
+
+/* forms (booking-form): fields on the system's control height, one radius, labels above */
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.form > :is(.field--full, .btn-row, p) { grid-column: 1 / -1; }
+.field { display: grid; gap: var(--s-2); font-size: var(--t-small); font-weight: 500; }
+.field :is(input, select, textarea) {
+  width: 100%; height: var(--btn-h); padding: 0 var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--r-sm);
+  background: var(--bg); color: var(--ink); font: 400 var(--t-body)/1.4 var(--font-text);
+}
+.field textarea { height: auto; min-height: 120px; padding-block: var(--s-3); resize: vertical; }
+@media (max-width: 639px) { .form { grid-template-columns: minmax(0, 1fr); } }
+
+/* sections part by a change of ground or by space only: no rule between them (.section--rule is plain) */
+
+/* the phone action bar (a place's directions and booking; other types may use it): fixed at the foot
+   under 640px, one 342x48 button or two of 165, and every section's foot pads for it (--bar) */
+.actionbar { display: none; }
+@media (max-width: 639px) {
+  :root:has(> body > nav.actionbar) { --bar: calc(64px + env(safe-area-inset-bottom)); }
+  .actionbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    gap: var(--s-3); align-items: center; height: calc(64px + env(safe-area-inset-bottom));
+    padding: var(--s-2) var(--gut) env(safe-area-inset-bottom); background: var(--bg); border-top: 1px solid var(--line);
+  }
+  .actionbar .btn { width: 100%; height: 48px; }
+}
+
+/* a brand-colour band (product and place may add one, in the page's second half): the accent as the
+   section's ground, its words in the accent's ink */
+.ground-brand { --bg: var(--p-accent); --surface: color-mix(in oklab, var(--p-accent) 88%, var(--p-accent-ink)); --ink: var(--p-accent-ink);
+  --muted: color-mix(in oklab, var(--p-accent-ink) 82%, var(--p-accent)); --card: var(--surface);
+  --action: var(--p-accent-ink); --action-ink: var(--p-accent); background: var(--bg); color: var(--ink); }
+.ground-brand { --line: color-mix(in oklab, var(--ink) 16%, transparent); --line-strong: color-mix(in oklab, var(--ink) 30%, transparent); }
+
+/* a [bracketed placeholder] or a "(sample)" tag left in visible text: system.js marks it so it shows
+   in every screenshot; nothing like it ships (copy.md) */
+[data-placeholder] { outline: 2px dashed #d92d20; outline-offset: 2px; }
+
+/* ---------------------------------------------------------------- highlight + entrance + motion */
+/* data-hl (older markup) is plain ink from the first frame: nothing on the page changes colour on load
+   (MO-62); a heading's second half in .muted is the one highlight */
+/* the hero's words are set on the first frame: no entrance (.enter stays a no-op for old markup) */
+.enter { animation: none; }
+@keyframes fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  /* a card loop of motion.css ([data-m-loop]) holds its own finished frame */
+  :not([data-m-loop], [data-m-loop] *), ::before, ::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+                           transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---------------------------------------------------------------- helpers */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.stack-2 > * + * { margin-top: var(--s-2); }
+.stack-4 > * + * { margin-top: var(--s-4); }
+.stack-5 > * + * { margin-top: var(--s-5); }
+.stack-6 > * + * { margin-top: var(--s-6); }
