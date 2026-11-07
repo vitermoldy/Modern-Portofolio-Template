@@ -1,0 +1,59 @@
+/*
+  taste-skill layout.css - layout v4 (references/layout-v4.md): one section per screen, equal left and
+  right edges, the ten hero types (heroes.json) and the display tokens a font pairing sets (fonts.json).
+  Link it after system.css, ui/cards.css and backgrounds/backgrounds.css; load layout.js after system.js.
+
+  Section   system.css sets the rhythm: every main > section exactly one or two screens (--h), its h2
+            first, --padt under its top; this file adds the heroes and the display tokens.
+  Hero      <section class="hero hero--<type>"><div class="wrap"><div class="hero-text ..">..</div></div>
+            first in main: exactly the first screen, the fixed header over its top.
+  Edges     one container; no one-sided bleed (a block stands on the lines or runs edge to edge).
+  Type      start.mjs deals the pairing (VI-02) and prints --font-*, --display-weight (400; 400 to 500
+            on tech) and --display-tracking; a page may add --display-stretch, --display-axes and
+            --ly-scale (the face's optical size against the default grotesk, 1 when unsure).
+  Place     a place's hero is never dealt: always hero--place (Recipe 3: the photograph under the
+            header, the words under it on the ground). Nothing is laid over a photograph to make
+            words readable, on any type: no scrim, gradient or veil (PH-31, VI-49).
+
+  Every number here is in references/layout-v4.md with what it was measured on; change it there first.
+*/
+
+/* ---------------------------------------------------------------- tokens */
+:root {
+  --ly-nav: var(--nav, 72px);
+  --ly-screen: calc(100svh - var(--ly-nav));      /* one screen under the fixed header: 828 at 1440x900, 788 at 390x844 */
+  --ly-pad: var(--padt, 120px);
+  --ly-hero-pad: var(--hgap, 48px);
+  --ly-head-gap: var(--head-gap, 48px);            /* a section's heading block to its visual (system.css) */
+  /* the content box of one screen (708 at 1440x900) and of the hero (716 = 900 - 72 - 48 - 64) */
+  --ly-fit: calc(100svh - var(--padt, 120px) - var(--padb, 72px) - var(--bar, 0px));
+  --ly-hero-h: calc(100svh - var(--nav, 72px) - var(--hgap, 48px) - var(--hpadb, 64px) - var(--bar, 0px));
+  --ly-scale: 1;
+  /* hero sizes: straight lines from 390 to 1440, times the pairing's --ly-scale (layout-v4.md, section 3) */
+  --ly-h1:       calc(var(--ly-scale) * clamp(40px, 3.048vw + 28.11px, 72px));    /* 72 / 40: split, product, film, centred */
+  --ly-h1-xl:    calc(var(--ly-scale) * clamp(44px, 3.429vw + 30.63px, 80px));    /* 80 / 44: photo */
+  --ly-h1-col:   calc(var(--ly-scale) * clamp(40px, 2.286vw + 31.09px, 64px));    /* 64 / 40: collage */
+  --ly-h1-mega:  calc(var(--ly-scale) * clamp(56px, 9.524vw + 18.86px, 156px));   /* 156 / 56: editorial */
+  --ly-h1-word:  calc(var(--ly-scale) * clamp(54px, 8.571vw + 20.57px, 144px));   /* 144 / 54: word */
+  --ly-h1-quiet: calc(var(--ly-scale) * clamp(34px, 2.095vw + 25.83px, 56px));    /* 56 / 34: statement */
+  --ly-h1-side:  calc(var(--ly-scale) * clamp(40px, 1.143vw + 35.54px, 52px));    /* 52 / 40: triptych */
+  --ly-lead: clamp(17px, .286vw + 15.89px, 20px);                                  /* 20 / 17 */
+}
+
+/* the pairing's display axes (fonts.json): width through font-stretch, the rest as settings */
+h1, h2, h3, .ly-display { font-stretch: var(--display-stretch, 100%); font-variation-settings: var(--display-axes, normal); }
+.card h3, .card h4, .tile h3 { font-stretch: 100%; font-variation-settings: normal; }
+
+/* ---------------------------------------------------------------- one section per screen
+   system.css makes every main > section exactly one or two screens (--h) with its h2 first; nothing
+   here centres a section's content (a short block centred in a tall screen hides that it is short) */
+main > .section .section-head { margin-bottom: var(--ly-head-gap); }
+/* a visual sized to what one screen leaves after its heading (--ly-head, about 160px for a two-line
+   h2 and a sub-line): or put .fill on it inside the section's .wrap */
+.fit-screen { height: clamp(280px, calc(var(--ly-fit) - var(--ly-head, 160px) - var(--ly-head-gap)), 720px); }
+@media (max-width: 1023px) { .fit-screen { height: auto; } }
+
+/* ---------------------------------------------------------------- edges */
+/* no one-sided bleed: a block either stands on the container's lines or runs edge to edge (a
+   full-bleed photograph or ground). layout-check.js flags a block that touches one viewport edge. */
+
