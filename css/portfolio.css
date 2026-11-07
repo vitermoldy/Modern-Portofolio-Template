@@ -45,3 +45,12 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 }
 @media (max-width: 639px) { .nav__actions { gap: var(--s-2); } }
 
+/* ---------------------------------------------------------------- 2. skip link */
+.skip {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.skip:focus-visible {
+  width: auto; height: auto; clip-path: none; z-index: 60; top: 12px; left: var(--gut);
+  padding: 10px 16px; border-radius: var(--r-sm); background: var(--action); color: var(--action-ink); font-weight: 500;
+}
+
