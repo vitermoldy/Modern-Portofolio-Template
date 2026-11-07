@@ -78,3 +78,38 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 .mk-place--phone { --mk-w: 272px; }
 .mk-place--win { --mk-w: 520px; }
 
+/* the phone */
+/* one box: the screen with the device's bezel as its border */
+.mk-phone {
+  position: relative; width: 100%; height: 600px; overflow: hidden;
+  border: 12px solid #111214; border-bottom: 0; border-radius: 40px 40px 0 0; background: #fff;
+}
+.mk-phone__notch { position: absolute; top: 8px; left: 50%; width: 76px; height: 20px; transform: translateX(-50%); border-radius: 12px; background: #000; z-index: 2; }
+.mk-app {
+  height: 100%; padding: 44px 16px 0; color: var(--mk-ink);
+  font: 400 13px/1.35 var(--font-text); position: relative;
+}
+.mk-app__top { display: flex; align-items: center; justify-content: space-between; }
+.mk-app__brand { font: 600 15px/1 var(--font-display); letter-spacing: -0.02em; color: var(--mk-accent); }
+.mk-avatar { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--mk-soft); font-size: 11px; font-weight: 600; color: var(--mk-muted); }
+.mk-app__title { margin-top: 18px; font: 500 22px/1.1 var(--font-display); letter-spacing: -0.02em; }
+.mk-days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 14px; }
+.mk-days span { display: grid; justify-items: center; gap: 2px; padding: 8px 0; border-radius: 12px; background: var(--mk-soft); font-size: 11px; color: var(--mk-muted); }
+.mk-days b { font-size: 15px; font-weight: 600; color: var(--mk-ink); }
+.mk-days .is-on { background: var(--mk-accent); color: rgb(255 255 255 / .85); }
+.mk-days .is-on b { color: #fff; }
+.mk-slots { display: grid; gap: 0; margin-top: 14px; }
+.mk-slots li { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--mk-line); }
+.mk-slot__time { font: 500 12px/1 var(--font-mono); color: var(--mk-muted); }
+.mk-slot__name { display: grid; gap: 2px; font-weight: 600; font-size: 13px; }
+.mk-slot__name small { font-weight: 400; font-size: 11px; color: var(--mk-muted); }
+.mk-btn {
+  display: inline-grid; place-items: center; height: 26px; padding: 0 12px; border-radius: 999px;
+  background: var(--mk-accent); color: #fff; font-size: 11px; font-weight: 600;
+}
+.mk-btn.is-done { background: color-mix(in oklab, var(--mk-accent) 14%, #fff); color: var(--mk-accent); }
+.mk-btn.is-off { background: var(--mk-soft); color: var(--mk-muted); }
+.mk-tabbar { position: absolute; left: 16px; right: 16px; bottom: 18px; display: flex; justify-content: space-around; padding: 12px 0; border-radius: 18px; background: var(--mk-soft); }
+.mk-tabbar span { width: 18px; height: 18px; border-radius: 6px; background: #d4d5d2; }
+.mk-tabbar .is-on { background: var(--mk-accent); }
+
