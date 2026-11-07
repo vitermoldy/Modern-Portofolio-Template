@@ -54,3 +54,16 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
   padding: 10px 16px; border-radius: var(--r-sm); background: var(--action); color: var(--action-ink); font-weight: 500;
 }
 
+/* ---------------------------------------------------------------- 3. drawn project screens
+   They stand on the lit ground (sage) like screenshots on a desk and keep their own light UI in both
+   themes, as a real screenshot would. Each project has its own colour (--mk-accent): colour comes
+   from the work, not from the page. */
+.mk-ground {
+  background-color: var(--ground-bg);
+  background-image:
+    radial-gradient(70% 90% at 12% 0%, color-mix(in oklab, var(--ground-surface) 92%, white), transparent 70%),
+    radial-gradient(60% 80% at 100% 100%, color-mix(in oklab, var(--ground-accent) 34%, var(--ground-bg)), transparent 72%);
+  border: 0;
+}
+:root { --mk-ink: #17181a; --mk-muted: #5f6368; --mk-line: #e7e7e4; --mk-soft: #f4f4f2; }
+
