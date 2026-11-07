@@ -460,3 +460,145 @@ html:is([data-buttons="pill"], [data-buttons="arrow"]) .btn:hover::after { trans
         font-size: var(--t-label); color: var(--ink); }
 .pill .muted { color: var(--muted); }
 
+/* ---------------------------------------------------------------- card (one style) */
+.card {
+  display: flex; flex-direction: column; gap: var(--s-2); min-width: 0;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--card-pad);
+}
+/* small titles in the text face: a display face at 20px (a condensed or hairline serif) reads smaller than the body */
+.card > h3, .card > h4, .card--plan h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: -0.01em; }
+/* the type floor (system.md): text people read is 16px or more in ink; cards.css sets it for its
+   card text, this for a plain card's lines */
+.card > p { color: var(--ink); font-size: var(--t-body); max-width: 52ch; }
+/* at most two boxes one inside the other (sections.md): a card whose panel holds UI drops its own
+   box, so its title and lines sit on the page ground over the panel (Figma's tiles), or runs the
+   panel flush to its sides and bottom (cards.css .panel--flush) */
+.card.card--open { --c-pad: 0px; background: none; border: 0; box-shadow: none; padding: 0; overflow: visible; }
+.card.card--open > .panel { margin: var(--s-5) 0 0; border-radius: var(--r-lg); }
+.card.card--open > .panel--top { margin: 0 0 var(--s-5); }
+.card--plan.is-featured { border-color: var(--action); box-shadow: inset 0 0 0 1px var(--action); }
+/* cards.css (linked after this file) sets .card { gap: 0 } for feature cards; a plan keeps its 16px rows */
+.card.card--plan { gap: var(--s-4); }
+
+/* ---------------------------------------------------------------- visuals: panels and frames
+   A card's .panel (the inset visual), .stage and the placements (.at-corner, .at-rise, .at-over,
+   .at-right, .at-center, .stage--fade-*) come from assets/ui/cards.css (references/cards.md).
+   This file adds the frames (hero, split, square, closing band) and lets a .stage work inside them.
+   The grounds' colours: system.js lights every ground that holds UI (see there). */
+:not(.card) > .panel { border-radius: var(--p-r, var(--r-md)); }   /* a panel on its own: four round corners */
+.menu-card .panel { --p-h: 160px; }
+.frame {
+  position: relative; isolation: isolate; overflow: clip; display: flex; align-items: center; justify-content: center;
+  background: var(--surface); border-radius: var(--r-lg); border: 1px solid var(--line);
+  padding: clamp(var(--s-4), 4vw, var(--s-7));
+}
+/* a zero-width spacer keeps --ratio (height / width) as the frame's minimum height */
+.frame::before { content: ""; flex: none; width: 0; padding-top: var(--ratio, 0px); }
+/* an object or scene (assets/objects) and a photograph (.frame__img) fill the frame themselves */
+.frame > :not(canvas, .stage, .loop-pause, .frame__fx, .frame__img, [data-print], [data-scene], .print3d) { position: relative; max-width: 100%; min-width: 0; }
+/* a photograph is a plain rectangle in its frame: no border, no print, no filter */
+.frame--photo { padding: 0; border: 0; }
+/* .frame--fill: as tall as its row (a split's picture beside the words, down to the section's foot);
+   stacked on a tablet or a phone it takes what the screen leaves, at least 200px */
+.frame--fill { height: 100%; }
+@media (max-width: 1023px) {
+  .grid.fill:has(> .frame--fill) { display: flex; flex-direction: column; gap: var(--s-6); }
+  .grid.fill > .frame--fill { flex: 1 1 0; height: auto; min-height: 200px; }
+}
+/* a split's words as a column: the last block (stats, a link) on the picture's bottom line */
+.split-col { display: flex; flex-direction: column; gap: var(--s-5); }
+@media (min-width: 1024px) { .split-col { height: 100%; } .split-col > .split-col__end { margin-top: auto; } }
+:is(.frame, .panel) > .frame__img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.frame--portrait { --ratio: 125%; }
+/* the product stage (hero-product): wide, the product whole on it; a phone gets a tall stage */
+.frame--stage { --ratio: 50%; }
+@media (max-width: 639px) { .frame--stage, .frame--portrait { --ratio: 120%; } }
+.frame--hero { padding: clamp(24px, 5vw, 64px); }
+.frame--split { --ratio: 80%; }
+.frame--square { --ratio: 100%; }
+/* the closing band: the hero's echo, lit with the page's ground (sand, sky, sage or painting) on light
+   and dark pages alike, so its text and buttons take that ground's ink. Its effect sits on a layer of
+   its own, <div class="frame__fx" data-fx="..">, held still and calm where the text sits (system.js) */
+.frame--cta { min-height: 420px; }
+/* .frame--lit: the same for an object's frame that holds a few words in its clear half (the
+   product statement's facts in a .frame__text, lower left; the object stands right of centre) */
+.frame--cta, .frame--lit {
+  border-color: transparent; background: var(--ground-bg); color: var(--ground-ink);
+  --bg: var(--ground-surface); --surface: var(--ground-surface); --ink: var(--ground-ink); --muted: var(--ground-muted);
+  --action: var(--ground-ink); --action-ink: var(--ground-surface);
+  --line: color-mix(in oklab, var(--ground-ink) 12%, transparent); --line-strong: color-mix(in oklab, var(--ground-ink) 24%, transparent);
+}
+.frame > .frame__fx { position: absolute; inset: 0; z-index: 0; }
+/* on a light page the buttons on a lit ground keep the page's own action colour: one action, one look
+   (a dark page keeps the lit ground's ink, which reads on the bright ground) */
+html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) { --action: var(--p-action); --action-ink: var(--p-action-ink); }
+/* a card on a photograph (a booking form over the room): the card holds the page's colours */
+.frame--photo:has(> .card) { padding: clamp(var(--s-5), 5vw, var(--s-8)) clamp(var(--s-4), 4vw, var(--s-7)); }
+.frame--photo > .card { position: relative; z-index: 1; width: min(100%, 480px); }   /* flat: no shadow at rest (ST-97) */
+.frame--cta > .frame__fx { opacity: .85; }
+.frame--lit > .frame__text { z-index: 2; align-self: flex-end; margin-right: auto; width: min(100%, 360px); display: grid; gap: var(--s-5); }
+/* 2:1 on a desktop; a phone gets 2:3, the words at the top and the object smaller and low under
+   them (its hero preset), so the facts never touch the object */
+.frame--lit { --ratio: 50%; }
+@media (max-width: 639px) { .frame--lit { --ratio: 150%; } .frame--lit > .frame__text { align-self: flex-start; } }
+@media (max-width: 639px) { .frame--split { --ratio: 100%; } }
+/* A hero, wide or split frame (x.ai's hero window): --w on the rising fragment's slot (its true width)
+   centres it while it fits; anchored 24px in and cut by the right edge once the frame is narrower.
+   --pair on the .stage (the main fragment's width plus the part of the second that sticks out)
+   centres the pair; below 1024 the main one alone. In a card's panel cards.css places it (.at-corner,
+   .at-rise, .at-right; a centred .at-rise.fit narrows with the panel), as its recipe says. */
+.frame > .stage > .at-rise { --ax: max(24px, calc(50% - var(--w, 64%) / 2)); }
+.frame--hero > .stage > .at-rise { --ax: max(24px, calc(50% - var(--pair, var(--w, 64%)) / 2)); }
+.frame--hero > .stage > .at-over { --bx: max(24px, calc(50% - var(--pair, 800px) / 2)); }
+@media (max-width: 1023px) { .frame--hero > .stage > .at-rise { --ax: max(24px, calc(50% - var(--w, 64%) / 2)); } }
+/* a frame holding a cards.css .stage: the stage fills it and places the fragments (references/cards.md);
+   the hero and wide frames are 16:7 and square on a phone; below 1024 only the main fragment shows */
+.frame:has(> .stage) { padding: 0; }
+.frame--hero:has(> .stage) { aspect-ratio: 16 / 7; }
+@media (max-width: 1023px) {
+  .frame--hero:has(> .stage) { aspect-ratio: 3 / 2; }   /* a tablet: room for the main fragment's rows */
+}
+/* a tablet held upright (820x1180): a taller frame, so the hero fills the screen without a gap */
+@media (min-width: 640px) and (max-width: 1023px) and (orientation: portrait) {
+  .frame--hero:has(> .stage) { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 1023px) {
+  .frame--hero > .stage > :is(.at-over, .at-over-l) { display: none; }
+}
+/* a split frame is about 440-560px wide from 1024 to 1279: the main piece alone there */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .frame--split > .stage > :is(.at-over, .at-over-l) { display: none; }
+}
+@media (max-width: 639px) {
+  .frame--hero:has(> .stage) { aspect-ratio: 1; }
+  .frame > .stage > :is(.at-over, .at-over-l) { display: none; }
+  /* phone: cards.css sets a fragment 16px in on both sides, and system.js holds every loop on its
+     finished picture, so no pause button lands on the UI */
+}
+/* a small object on a focal tile (.at-center): its true width (--w, 288px for the slider), narrowed
+   on a small panel so 24px of ground always shows on both sides (a span-4 panel is 304px at 1280) */
+.stage > .at-center { width: calc(100% - 48px); max-width: var(--w, 288px); }
+.stage > .at-center > :is([data-ui], .ui) { width: 100%; max-width: none; }
+/* .to-edge stretches a fragment's surface past the bottom (cards.css); doc's surface is its page */
+.stage > .to-edge > .ui-doc > .ui-doc__page { min-height: 100%; }
+/* .hero-stage: whole fragments side by side in a frame, never overlapping or cut (a row of app
+   screens); the first is the main one, and the ones that no longer fit drop out from the end */
+.hero-stage { container: hero-stage / inline-size; width: 100%; }
+.hero-stage__row { display: flex; align-items: center; justify-content: center; gap: var(--s-5); }
+.hero-stage__row > * { flex: none; max-width: 100%; }
+@container hero-stage (max-width: 1060px) { .hero-stage__row > :nth-child(n + 3) { display: none; } }
+@container hero-stage (max-width: 740px)  { .hero-stage__row > :nth-child(n + 2) { display: none; } }
+/* the pause button on every visual that moves by itself for more than 5 s (WCAG 2.2.2): ui.js adds it
+   to a loop when it starts to move, system.js to the hero's ground. Write a button.loop-pause into
+   the frame only for a loop of your own (hero-cycle). The same solid 32px disc in the page colours as
+   assets/ui/base.css's, 12px in from the bottom-right corner, with a 44px hit area. */
+.loop-pause {
+  position: absolute; right: 12px; bottom: 12px; z-index: 6; display: grid; place-items: center;
+  width: 32px; height: 32px; margin: 0; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); background: var(--bg); color: var(--ink);
+  box-shadow: 0 1px 2px rgb(0 0 0 / .12), 0 4px 12px -4px rgb(0 0 0 / .28);
+}
+.loop-pause::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
+.loop-pause svg { width: 14px; height: 14px; fill: currentColor; }
+@media (prefers-reduced-motion: reduce) { .loop-pause { display: none; } }
+
