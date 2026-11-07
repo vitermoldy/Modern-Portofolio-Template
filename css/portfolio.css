@@ -212,3 +212,24 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 @media (max-width: 1279px) { #work .panel { --p-h: 280px; } }
 @media (max-width: 639px) { #work .panel { --p-h: 200px; } }
 
+/* ---------------------------------------------------------------- 4. process and about */
+.process-visual { display: grid; place-items: center; padding: var(--s-7); }
+.mk-handoff { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px; width: min(100%, 640px); align-items: start; }
+.mk-inspect { padding: 16px; border-radius: 14px; background: #fff; color: var(--mk-ink); font: 400 12px/1.35 var(--font-text); box-shadow: 0 0 0 1px rgb(0 0 0 / .08); }
+.mk-inspect__head { font-weight: 600; font-size: 12px; }
+.mk-inspect__preview { display: grid; place-items: center; height: 92px; margin: 12px 0; border-radius: 10px; background: repeating-conic-gradient(#f1f1ef 0 25%, #fff 0 50%) 0 0 / 14px 14px; }
+.mk-inspect__preview span { height: 34px; padding: 0 16px; display: inline-grid; place-items: center; border-radius: 999px; background: #2b59c3; color: #fff; font-weight: 600; outline: 1.5px solid #ff4a1f; outline-offset: 3px; }
+.mk-inspect dl { display: grid; gap: 0; margin: 0; }
+.mk-inspect dl > div { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-top: 1px solid var(--mk-line); }
+.mk-inspect dt { color: var(--mk-muted); }
+.mk-inspect dd { margin: 0; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; }
+.mk-inspect dd i { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+.mk-code {
+  margin: 0; padding: 18px; border-radius: 14px; background: #121315; color: #d9dce1; overflow: hidden;
+  font: 400 12.5px/1.65 var(--font-mono); box-shadow: 0 0 0 1px rgb(0 0 0 / .2); white-space: pre;
+}
+.mk-code .k { color: #ff8a65; } .mk-code .p { color: #9ecbff; } .mk-code .v { color: #c8e6a0; }
+@media (max-width: 1279px) { .mk-handoff { grid-template-columns: 1fr; width: min(100%, 420px); } .mk-inspect dl, .mk-code .mk-code__extra { display: none; } }
+@media (max-width: 1023px) { .process-visual { padding: var(--s-5); } }
+@media (max-width: 639px) { .process-visual { padding: var(--s-4); } .mk-inspect { display: none; } .mk-code { font-size: 10.5px; line-height: 1.5; padding: 12px; } }
+
