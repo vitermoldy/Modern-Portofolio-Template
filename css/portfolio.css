@@ -168,3 +168,21 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 .mk-bars span.is-on { background: var(--mk-accent); }
 .mk-bars__days i { text-align: center; font: 400 11px/1.4 var(--font-mono); font-style: normal; color: var(--mk-muted); }
 
+/* design system sheet */
+.mk-ds { padding: 18px; display: grid; gap: 10px; }
+.mk-ds__label { font-size: 11px; font-weight: 600; color: var(--mk-muted); }
+.mk-ds__label:not(:first-child) { margin-top: 6px; }
+.mk-ds__swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.mk-ds__swatches span { display: grid; gap: 6px; }
+.mk-ds__swatches span::before { content: ""; height: 44px; border-radius: 10px; background: var(--c); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .06); }
+.mk-ds__swatches i { font: 400 10px/1 var(--font-mono); font-style: normal; color: var(--mk-muted); }
+.mk-ds__row { display: flex; flex-wrap: wrap; gap: 8px; }
+/* the mocks' buttons are drawn at screenshot scale (28px, 11px labels), so they never read as the page's own buttons */
+.mk-ds__btn { height: 28px; padding: 0 14px; display: inline-grid; place-items: center; border-radius: 999px; background: var(--mk-accent); color: #fff; font-weight: 600; font-size: 11px; }
+.mk-ds__btn--ghost { background: #fff; color: var(--mk-accent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-accent) 40%, #fff); }
+.mk-ds__btn--off { background: var(--mk-soft); color: #9a9ea6; }
+.mk-ds__field { display: grid; gap: 4px; padding: 10px 12px; border-radius: 10px; box-shadow: inset 0 0 0 1.5px var(--mk-accent); }
+.mk-ds__field small { font-size: 11px; color: var(--mk-muted); }
+.mk-ds__field span { display: flex; justify-content: space-between; font: 500 16px/1.2 var(--font-mono); }
+.mk-ds__field em { font-style: normal; color: var(--mk-muted); font-size: 12px; }
+
