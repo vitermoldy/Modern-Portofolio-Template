@@ -772,3 +772,74 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .nav--tone .nav__menu { --bg: var(--p-bg); --ink: var(--p-ink); --muted: var(--p-muted); --action: var(--p-action); --line: color-mix(in oklab, var(--p-ink) 11%, transparent); }
 /* the older float type is the plain bar now (a floating, frosted pill is not a header) */
 
+/* ---------------------------------------------------------------- logo row */
+.logos { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-5) var(--s-6); }
+.logos > * { height: 28px; width: auto; max-width: 100%; color: var(--ink); }
+.logos .wordmark { height: auto; font: 500 var(--t-card)/1 var(--font-display); letter-spacing: -0.02em; white-space: nowrap; }
+/* --mono marks in a logo row: 28px tall, each in the same box (the mask keeps its shape) */
+.logos .icon-mono { width: 120px; height: 28px; }
+/* tablet and phone: a grid, so a wrapped row never leaves one logo on its own */
+@media (max-width: 1023px) { .logos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); justify-items: center; } }
+@media (max-width: 639px)  { .logos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------------------------------------------------------------- lists, quote, steps */
+.checks { display: grid; gap: var(--s-3); }
+.checks li { display: grid; grid-template-columns: 20px 1fr; gap: var(--s-3); align-items: start; }
+.checks li::before {
+  content: ""; width: 20px; height: 20px; margin-top: 2px; background: var(--action);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cmask id='m'%3E%3Crect width='20' height='20' fill='white'/%3E%3Cpath d='M6 10.2l2.6 2.6L14 7.4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/mask%3E%3Ccircle cx='10' cy='10' r='10' mask='url(%23m)'/%3E%3C/svg%3E") center / 20px no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cmask id='m'%3E%3Crect width='20' height='20' fill='white'/%3E%3Cpath d='M6 10.2l2.6 2.6L14 7.4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/mask%3E%3Ccircle cx='10' cy='10' r='10' mask='url(%23m)'/%3E%3C/svg%3E") center / 20px no-repeat;
+}
+.quote blockquote { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--t-h3);
+                    line-height: 1.3; letter-spacing: var(--display-tracking); text-wrap: pretty; }
+/* cards.css styles .quote as quote text; who said it stays in the text face */
+.quote figcaption, .quote .person { font: 400 var(--t-small)/1.45 var(--font-text); letter-spacing: 0; color: var(--ink); }
+.person { display: flex; align-items: center; gap: var(--s-3); }
+.person img, .person .avatar { width: 40px; height: 40px; border-radius: 999px; object-fit: cover; background: var(--surface); flex: none; }
+.person .avatar { display: grid; place-items: center; font: 500 var(--t-small)/1 var(--font-text); color: var(--muted); }
+/* the number beside a quote (quote-stat): below 1024 it sits under the quote, by space alone (ST-43) */
+@media (max-width: 1023px) { .stat-aside { margin-top: var(--s-7); } }
+/* a stats row: two to four short facts, the number above its label (data-m-count on a count) */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--s-5) var(--gutter); margin: 0; }
+.stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: var(--s-2); }
+.stats dd { margin: 0; }
+.stats .t-stat { font-size: clamp(26px, 1vw + 22px, 36px); }
+@media (max-width: 639px) { .stats .t-stat { font-size: 26px; } }
+.step-num { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 999px;
+            border: 1px solid var(--line-strong); font: 500 var(--t-small)/1 var(--font-text); font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.tab {
+  height: var(--btn-h-sm); padding: 0 var(--s-4); border-radius: var(--r-btn); border: 1px solid var(--line);
+  background: transparent; color: var(--muted); font-size: var(--t-small); font-weight: 500; cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.tab:hover { color: var(--ink); border-color: var(--line-strong); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+/* the panel shown at load is there on the first frame (MO-62); system.js fades a chosen one in */
+[role="tabpanel"][hidden] { display: none; }
+
+/* ---------------------------------------------------------------- pricing */
+.price { display: flex; align-items: baseline; gap: var(--s-2); }
+.price .t-stat { font-size: var(--t-stat); }
+.card--plan { gap: var(--s-4); }
+.card--plan .btn { width: 100%; }
+.card--plan .checks { margin-top: var(--s-2); }
+.badge { display: inline-flex; align-items: center; height: 24px; padding: 0 var(--s-3); border-radius: 999px; vertical-align: middle;
+         background: var(--action); color: var(--action-ink); font: 500 var(--t-label)/1 var(--font-text); letter-spacing: 0; }
+.card--plan h3 .badge { margin-left: var(--s-2); }
+
+/* ---------------------------------------------------------------- FAQ
+   Every answer is open, always (ST-47, MO-70): no accordion, no +/- marker, nothing changes height.
+     <div class="faq"><div class="faq__item"><h3>[Question]</h3><p>[Answer]</p></div> ...</div>
+   Older <details> markup shows its answer open too (system.js also sets [open]). */
+.faq > :is(.faq__item, details) { display: grid; gap: var(--s-2); padding: var(--s-5) 0; border-bottom: 1px solid var(--line); }   /* each row closes with its rule (ST-43) */
+.faq > :is(.faq__item, details):first-child { padding-top: 0; }
+.faq :is(.faq__item > h3, summary) { display: block; font: 500 var(--t-lead)/1.4 var(--font-text); letter-spacing: 0; list-style: none; cursor: text; }
+.faq summary { pointer-events: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq details::details-content { content-visibility: visible; }
+.faq :is(.faq__item, details) p { color: var(--ink); max-width: 64ch; }
+@media (max-width: 639px) { .faq > :is(.faq__item, details) { padding: var(--s-4) 0; } }
+
