@@ -242,3 +242,11 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 
 .nowrap { white-space: nowrap; }
 
+/* a phone: the process holds one screen. The step's deliverable label and the focus rule of the code
+   are the parts the phone drops; every step and its line stay. */
+@media (max-width: 639px) {
+  .process-rows > li { padding-block: var(--s-3); }
+  .process-rows .rows__value { display: none; }
+  .mk-code .mk-code__extra { display: none; }
+}
+
