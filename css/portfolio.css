@@ -268,3 +268,11 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
   #work .mk-bars { height: 96px; }
   footer.closing .closing__links .footer__col { grid-column: auto / span 6; }
 }
+/* phone: the hero's phone fades out at the picture's foot instead of cutting a row through */
+@media (max-width: 1023px) {
+  .mk-phone--hero { -webkit-mask-image: linear-gradient(#000 calc(100% - 72px), transparent); mask-image: linear-gradient(#000 calc(100% - 72px), transparent); }
+}
+@media (max-width: 639px) {
+  #process .frame--fill, #about .frame--fill { min-height: 160px; }
+}
+
