@@ -1,0 +1,22 @@
+/*
+  Portfolio page CSS. The grid, type, buttons, nav, cards and footer come from assets/system.css;
+  this file holds only what the kit does not have:
+    1. the light theme and its toggle
+    2. the skip link
+    3. the drawn project screens (mk-*), which stand in until you add your own screenshots
+    4. the process and about sections' visuals
+*/
+
+/* ---------------------------------------------------------------- 1. light theme
+   Dark is the default (the owner's direction). Light swaps the palette tokens only, so every kit
+   component follows. The orange is darkened to #c2330c in light mode: #ff4a1f on #eff0f1 is 2.9:1,
+   under the 3:1 a focus ring and a link need; #c2330c is 4.9:1 and carries white text at 5.6:1. */
+html[data-theme="light"] {
+  --p-bg: #eff0f1; --p-surface: #e4e5e6; --p-ink: #18191b; --p-muted: #5b5c5e;
+  --p-accent: #c2330c; --p-accent-ink: #ffffff; --p-action: #c2330c; --p-action-ink: #ffffff;
+  --p-inv-bg: #18191b; --p-inv-surface: #222427; --p-inv-ink: #eff0f1; --p-inv-muted: #9c9ea3;
+  --p-inv-accent: #ff4a1f; --p-inv-accent-ink: #18191b; --p-inv-action: #ff4a1f; --p-inv-action-ink: #18191b;
+  color-scheme: light;
+}
+html[data-theme="dark"] { color-scheme: dark; }
+
