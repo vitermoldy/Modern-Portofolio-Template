@@ -372,3 +372,91 @@ main > :is(.hero, .section--hero) {
   .grid > .card.span-4:has(> .panel):nth-child(odd of .card.span-4):nth-last-child(1 of .card.span-4) { grid-column: 1 / -1; }
 }
 
+/* ---------------------------------------------------------------- section heading */
+.section-head { max-width: 760px; margin-bottom: var(--head-gap); display: grid; gap: var(--s-4); }
+/* every heading starts on the left line (a centred head among left ones reads as a mistake): the
+   old centred head is left-aligned too */
+.section-head--center { text-align: left; justify-items: start; }
+/* a head row: the h2 (and its line) left, one link or the section's button at the right line */
+.section-head--split { max-width: none; display: flex; align-items: end; justify-content: space-between; gap: var(--s-5); flex-wrap: wrap; }
+.section-head--split > div { display: grid; gap: var(--s-4); max-width: 760px; }
+.section-head p { color: var(--ink); font-size: var(--t-lead); line-height: 1.5; max-width: 60ch; }
+.section-head--row { max-width: none; display: flex; align-items: end; justify-content: space-between; gap: var(--s-5); flex-wrap: wrap; }
+.section-head--row > div { display: grid; gap: var(--s-4); max-width: 760px; }
+/* the hero row (hero-product, hero-cycle): the h1 and its line left, the buttons right, across 1280 */
+.section--hero .section-head--row { max-width: none; }
+
+/* ---------------------------------------------------------------- buttons (one pair, a dealt look)
+   One pair a page, .btn--primary and .btn--secondary, in the look dealt with the page (sections.md)
+   and set once on <html data-buttons>; the markup never changes:
+     solid  filled primary, outlined secondary, the radius scale (Figma; the default)
+     pill   pills, a chevron after the primary's label, a tinted secondary (x.ai)
+     tonal  the radius scale, a tinted secondary with no outline (Linear, Vercel)
+     arrow  an arrow after the primary's label; the secondary is a text link with an arrow (Stripe)
+     block  near-square corners, 48px tall; the secondary is an underlined text link (shops, hotels) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+  height: var(--btn-h); padding: 0 var(--s-5); border-radius: var(--r-btn); border: 1px solid transparent;
+  font: 500 var(--t-body)/1 var(--font-text); letter-spacing: 0; white-space: nowrap; cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+}
+.btn--primary { background: var(--action); color: var(--action-ink); }
+.btn--primary:hover { background: color-mix(in oklab, var(--action) 86%, var(--ink)); }
+/* an inverted primary (the action is the ground's ink: a brand band, a lit ground): its hover steps toward the ground, as the filled one steps toward the ink */
+.ground-brand .btn--primary:hover { background: color-mix(in oklab, var(--action) 88%, var(--bg)); }
+/* the ground's own colour with a clear border: never grey on grey, readable on an effect too */
+.btn--secondary { background: var(--bg); color: var(--ink); border-color: var(--line-strong); }
+.btn--secondary:hover { background: color-mix(in oklab, var(--bg) 94%, var(--ink)); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
+.btn--sm { height: var(--btn-h-sm); padding: 0 var(--s-4); font-size: var(--t-small); }
+html[data-buttons="pill"] { --r-btn: 999px; }
+html[data-buttons="block"] { --r-btn: 2px; --btn-h: 48px; }
+html:is([data-buttons="pill"], [data-buttons="tonal"]) .btn--secondary { background: color-mix(in oklab, var(--ink) 8%, var(--bg)); border-color: transparent; }
+html:is([data-buttons="pill"], [data-buttons="tonal"]) .btn--secondary:hover { background: color-mix(in oklab, var(--ink) 14%, var(--bg)); border-color: transparent; }
+/* arrow and block: the secondary is a text link at the button's height (no box: one button look) */
+html:is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary {
+  background: none; border-color: transparent; padding-inline: var(--s-2);
+  text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-strong);   /* the .link look */
+}
+html:is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:hover { background: none; border-color: transparent; text-decoration-color: currentColor; }
+/* the glyph after a label: a chevron (pill) or an arrow (arrow), drawn so every font shows the same */
+html[data-buttons="pill"] .btn--primary::after,
+html[data-buttons="arrow"] :is(.btn--primary, .btn--secondary)::after {
+  content: ""; flex: none; width: 12px; height: 12px; margin-right: -2px; background: currentColor;
+  -webkit-mask: var(--btn-glyph) center / contain no-repeat; mask: var(--btn-glyph) center / contain no-repeat;
+  transition: transform var(--dur) var(--ease);
+}
+html[data-buttons="pill"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4.5 2.5 8 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+html:is([data-buttons="pill"], [data-buttons="arrow"]) .btn:hover::after { transform: translateX(3px); }
+.btn:active { transform: translateY(1px) scale(.985); }
+.btn--arrow::after { content: "\2192"; transition: transform var(--dur) var(--ease); }
+.btn--arrow:hover::after { transform: translateX(3px); }
+/* the drawn arrow (assets/motion: its stem grows and its head moves 3px on hover), the last child of
+   a primary button, a pill or a link: <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
+   <path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg>.
+   It replaces the dealt glyph, so a button never shows two */
+.m-arrow { flex: none; width: 12px; height: 12px; margin-right: -2px; overflow: visible;
+           fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.btn--xl .m-arrow { width: 0.62em; height: 0.62em; stroke-width: 1.4; }
+:is(.btn, .link, .pill):has(> .m-arrow)::after { content: none; display: none; }
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+.section-head--center .btn-row { justify-content: center; }
+/* on the phone every button row stacks full width */
+@media (max-width: 639px) {
+  .btn-row { flex-direction: column; align-items: stretch; width: 100%; justify-self: stretch; }
+  /* full width, the second action is a text link at the button's height under the filled one (an
+     outline across the whole screen reads as a rule, a pale fill as a switched-off button) */
+  .btn-row > .btn--secondary { background: none; border-color: transparent; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-strong); }
+  .section-head--split > .btn { width: 100%; }
+}
+.link { display: inline-flex; align-items: center; gap: var(--s-2); font-weight: 500; color: var(--ink);
+        text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px;
+        transition: text-decoration-color var(--dur) var(--ease); }
+.link:hover { text-decoration-color: currentColor; }
+.link::after { content: "\2192"; display: inline-block; text-decoration: none; transition: transform var(--dur) var(--ease); }
+.link:hover::after { transform: translateX(3px); }
+.pill { display: inline-flex; align-items: center; gap: var(--s-2); height: 32px; padding: 0 var(--s-3);
+        border-radius: 999px; border: 1px solid var(--line); background: var(--card);
+        font-size: var(--t-label); color: var(--ink); }
+.pill .muted { color: var(--muted); }
+
