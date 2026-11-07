@@ -207,3 +207,8 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 .mk-shop__opts .is-on { box-shadow: inset 0 0 0 1.5px var(--mk-ink); font-weight: 600; }
 .mk-shop__add { margin-top: 10px; height: 28px; display: grid; place-items: center; border-radius: 999px; background: var(--mk-ink); color: #fff; font-size: 11px; font-weight: 600; }
 
+/* the work cards: one panel height a row (system.css stretches the second row to the screen's foot) */
+#work .panel { --p-h: 320px; }
+@media (max-width: 1279px) { #work .panel { --p-h: 280px; } }
+@media (max-width: 639px) { #work .panel { --p-h: 200px; } }
+
