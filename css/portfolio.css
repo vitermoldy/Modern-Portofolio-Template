@@ -134,3 +134,14 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 }
 .is-m-paused .mk-btn--loop, .is-m-paused .mk-btn--loop > span { animation-play-state: paused; }
 
+/* the hero's phone: right of centre, so the float card on the lower left never covers it */
+.hero__media.mk-ground { display: block; }
+/* top 48px, its foot on the frame's foot: the screen bleeds out of the picture, never cut part-way */
+.mk-phone--hero { position: absolute; top: 48px; bottom: 0; right: 64px; width: 300px; height: auto; border-radius: 44px 44px 0 0; }
+.hero__media .ly-float { width: 240px; }
+@media (max-width: 1279px) { .mk-phone--hero { right: 40px; } }
+@media (max-width: 1023px) {
+  .mk-phone--hero { right: auto; left: 50%; transform: translateX(-50%); top: 32px; }
+  .hero__media .ly-float { display: none; }
+}
+
