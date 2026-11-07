@@ -138,3 +138,76 @@
     color-mix(in oklab, var(--calm, #000) var(--calm-k, 30%), transparent), transparent 72%);
 }
 
+/* ---------------------------------------------------------------- where a fragment sits */
+/* .stage holds the fragment(s) and gives them their palette: the fragment surface is one step
+   lighter than the card on dark grounds and white on light ones */
+.stage, .panel > .stage, .panel__screen > .stage {
+  position: absolute; inset: 0; z-index: 1; max-width: none;
+  --ui-font: var(--font-text); --ui-mono: var(--font-mono); --ui-radius: 12px;
+  /* the fragment surface: white on a light card, one step lighter than a dark card (--frag overrides) */
+  --fx-bg: var(--frag, oklch(from var(--card) clamp(calc(l + 0.05), calc((l - 0.5) * 1000), 1) calc(c * 0.5) h));
+  --fx-surface: var(--card); --fx-ink: var(--ink); --fx-muted: var(--muted);
+  --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
+}
+.stage > * { position: absolute; max-width: none; }
+/* from 640px a fragment keeps its true width and is cropped by the panel, never squeezed to fit
+   (on a phone it takes the panel's width instead: see the end of this block) */
+@media (min-width: 640px) { .stage > :not(.at-center) > [data-ui] { max-width: none; } }
+/* a fragment cut by the panel's edge dissolves into the ground over its last --fade-h (64px; 40px for a
+   short panel) instead of being sliced through a line of text (edge-fade-dissolve, 14 of 41 sites).
+   The fade only ever covers context: the fragment's point (the row that changes, the number, the
+   button) sits above it. */
+.stage { --fade-h: 64px; }
+.stage--fade-b { -webkit-mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)); mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)); }
+.stage--fade-r { -webkit-mask: linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px)); mask: linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px)); }
+.stage--fade-br {
+  -webkit-mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)), linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px));
+  -webkit-mask-composite: source-in;
+  mask: linear-gradient(to bottom, #000 calc(100% - var(--fade-h)), transparent calc(100% - 4px)), linear-gradient(to right, #000 calc(100% - 72px), transparent calc(100% - 4px));
+  mask-composite: intersect;
+}
+/* anchored at the top-left inset, cut by the right and bottom edges (19 of 41 sites) */
+.at-corner { left: var(--ax, 32px); top: var(--ay, 32px); }
+/* anchored at the top-right inset, cut by the bottom only: on a narrow panel it narrows to the panel
+   minus both insets rather than run out of the left edge through its text */
+.at-right { right: var(--ax, 32px); top: var(--ay, 32px); max-width: calc(100% - 2 * var(--ax, 32px)); }
+.stage > .at-right > :is([data-ui], .ui) { max-width: 100%; }
+/* rising out of the bottom edge (x.ai) */
+.at-rise { left: var(--ax, 18%); top: var(--ay, 48px); }
+/* .to-edge: the wrapper reaches --cut (72px) past the panel's bottom edge whatever the panel's height,
+   so a fragment that fills its wrapper (stat with opts.fill, a long list) is always cut on purpose and
+   never by a few accidental px */
+.stage > .to-edge { bottom: calc(-1 * var(--cut, 72px)); }
+.stage > .to-edge > :is([data-ui], .ui) { height: 100%; }
+/* .fit: the fragment takes the panel's width minus --ax on both sides instead of its own, for a narrow
+   panel where a few px of overhang would cut its text (contain it, or cut it by 48px or more).
+   --fit-max (its true width, e.g. 400px for chat) keeps it at that width on a wide panel, centred
+   between the insets (x.ai's window rising out of the bottom edge), so it only narrows where the
+   panel is too small: never a 1-23px sliver, a cut at 1024, or uneven ground at the sides */
+.stage > .fit { right: var(--ax, 32px); }
+.stage > .fit > :is([data-ui], .ui) { width: 100%; max-width: var(--fit-max, 100%); margin-inline: auto; }
+/* .wide: a fluid fragment (files, calendar) set wider than the panel (--w), so it is cut by the right
+   edge like a window, not centred with even ground round it; pair with .stage--fade-br. Whatever the
+   panel's width it runs at least 64px past the right edge */
+.stage > .wide { width: max(var(--w, 680px), 100% - var(--ax, 32px) + 64px); }
+.stage > .wide > :is([data-ui], .ui) { width: 100%; max-width: none; }
+/* a small control in the calm middle of a focal ground (Figma's Texture tile): never a window or a
+   dialog. It never runs past the panel: at most the panel less 24px a side */
+.at-center { left: 50%; top: 50%; translate: -50% -50%; max-width: calc(100% - 48px); }
+.stage > .at-center > :is([data-ui], .ui) { max-width: 100%; }
+/* a second fragment laid over the first one's edge */
+.at-over { right: var(--bx, 24px); bottom: var(--by, 24px); z-index: 2; }
+.at-over-l { left: var(--bx, 24px); bottom: var(--by, 24px); z-index: 2; }
+/* phone: a fragment takes the panel's width minus the inset on both sides (its own width stays the upper
+   bound), so it is only ever cut at the bottom, never through a line of text at the side. The desktop
+   --ax and --ay are ignored here; --ay-sm sets the top. */
+@media (max-width: 639px) {
+  .stage > :is(.at-corner, .at-right, .at-rise) { left: var(--ax-sm, 16px); right: var(--ax-sm, 16px); top: var(--ay-sm, 24px); max-width: none; }
+  .stage > :is(.at-corner, .at-right, .at-rise) > :is([data-ui], .ui) { max-width: 100%; }
+  .stage > .wide { width: auto; }
+  .stage > .at-center { max-width: calc(100% - 2 * var(--ax-sm, 16px)); }
+  /* a dialog over a window takes the panel's width less 12px a side, never running past it */
+  .stage > :is(.at-over, .at-over-l) { left: 12px; right: 12px; bottom: 16px; }
+  .stage > :is(.at-over, .at-over-l) > :is([data-ui], .ui) { width: auto; max-width: 100%; }
+}
+
