@@ -113,3 +113,24 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
 .mk-tabbar span { width: 18px; height: 18px; border-radius: 6px; background: #d4d5d2; }
 .mk-tabbar .is-on { background: var(--mk-accent); }
 
+/* the one loop of the page: a slot is booked, 3.2 s a cycle. motion.js pauses it off screen, restarts
+   it when the pointer enters the card and adds the pause button; under reduced motion it rests on Booked */
+.mk-btn--loop { display: inline-grid; grid-template-areas: "a"; min-width: 70px; }
+.mk-btn--loop > span { grid-area: a; }
+.mk-btn--loop { animation: mk-book 3.2s var(--m-ease, ease) infinite; }
+.mk-btn--loop > span:first-child { animation: mk-out 3.2s linear infinite; }
+.mk-btn--loop > span:last-child { animation: mk-in 3.2s linear infinite; }
+@keyframes mk-book {
+  0%, 38% { background: var(--mk-accent); color: #fff; }
+  44%, 92% { background: color-mix(in oklab, var(--mk-accent) 14%, #fff); color: var(--mk-accent); }
+  100% { background: var(--mk-accent); color: #fff; }
+}
+@keyframes mk-out { 0%, 38% { opacity: 1; } 44%, 92% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes mk-in  { 0%, 38% { opacity: 0; } 44%, 92% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .mk-btn--loop, .mk-btn--loop > span { animation: none; }
+  .mk-btn--loop { background: color-mix(in oklab, var(--mk-accent) 14%, #fff); color: var(--mk-accent); }
+  .mk-btn--loop > span:first-child { opacity: 0; }
+}
+.is-m-paused .mk-btn--loop, .is-m-paused .mk-btn--loop > span { animation-play-state: paused; }
+
