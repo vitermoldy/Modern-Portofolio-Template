@@ -1,0 +1,96 @@
+/*
+  taste-skill motion.css - the micro-interactions a company site has (figma.com, x.ai): one small
+  opt-in layer over system.css and ui/cards.css. Link it after them (data-motion on <html> is optional);
+  load motion.js once (it adds the tab indicator, the number tick and the card loops).
+  The layer is ON as soon as this file is linked: no attribute is needed (a hover shot of a linked card or photo
+  shows the 2px lift and the 1.03 zoom). <html data-motion="off"> switches the whole layer off; data-motion="live"
+  is the number tick in a headless shot (motion.js).
+  references/motion.md says what moves and how fast. Everything here answers the pointer, the
+  keyboard or a number coming into view once; nothing moves because the page scrolled.
+
+  Hover rules sit under (hover: hover) and (pointer: fine): a phone never keeps a stuck hover.
+  Under prefers-reduced-motion colours still change; nothing moves or scales.
+*/
+
+:root {
+  --m-in: 140ms;                              /* hover in: buttons, links, nav, tabs */
+  --m-out: 200ms;                             /* hover out, panel close */
+  --m-press: 90ms;                            /* a press */
+  --m-panel: 200ms;                           /* a menu or sheet opening */
+  --m-slide: 240ms;                           /* an indicator travelling between two tabs or links */
+  --m-image: 600ms;                           /* a photograph scaling inside its mask */
+  --m-ease: cubic-bezier(.2, .8, .2, 1);      /* ease-out: fast start, soft landing */
+  --m-ease-io: cubic-bezier(.65, 0, .35, 1);  /* the indicator: leaves and lands softly */
+  --m-cycle: 3.2s;                            /* one cycle of a card's loop (2.5-4 s) */
+  --m-lift: -2px;
+}
+
+/* ---------------------------------------------------------------- buttons */
+html:not([data-motion="off"]) .btn {
+  position: relative;
+  transition: background-color var(--m-out) var(--m-ease), color var(--m-out) var(--m-ease),
+              border-color var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease),
+              transform var(--m-press) var(--m-ease);
+}
+/* the tone moves toward the ground: a black button greys a little on white, a white one on black */
+html:not([data-motion="off"]) .btn--primary:hover { background: color-mix(in oklab, var(--action) 84%, var(--bg)); }
+html:not([data-motion="off"]) .btn--secondary:hover {
+  background: color-mix(in oklab, var(--bg) 92%, var(--ink));
+  border-color: color-mix(in oklab, var(--ink) 32%, transparent);
+}
+html:not([data-motion="off"]) .btn:hover { transition-duration: var(--m-in), var(--m-in), var(--m-in), var(--m-in), var(--m-press); }
+html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.985); }
+/* the step: a button rises 1px on hover (2px on the large size) and presses 1px down with a 1.5% shrink on
+   click; pointer only. The text-link secondary (arrow and block looks) keeps its underline and does not step.
+   Reduced motion keeps the colour change only (see the end of this file). */
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) .btn:hover { transform: translateY(-1px); }
+  html:not([data-motion="off"]) .btn--xl:hover { transform: translateY(-2px); }
+  html:not([data-motion="off"]):is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:hover { transform: none; }
+  html:not([data-motion="off"]) .btn:active { transform: translateY(1px) scale(.985); }
+  html:not([data-motion="off"]):is([data-buttons="arrow"], [data-buttons="block"]) .btn--secondary:active { transform: scale(.985); }
+}
+
+/* the arrow: the text arrow (.btn--arrow, .link) nudges 3px; the drawn arrow (.m-arrow) grows its
+   stem and moves its head 3px, the way a good product site's "Learn more" does */
+html:not([data-motion="off"]) :is(.btn--arrow, .link)::after { transition: transform var(--m-out) var(--m-ease); }
+html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after { transform: translateX(3px); transition-duration: var(--m-in); }
+.m-arrow { width: 12px; height: 12px; flex: none; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.6;
+           stroke-linecap: round; stroke-linejoin: round; }
+.m-arrow__stem { opacity: 0; transform: scaleX(.2); transform-origin: 1px 50%; transform-box: fill-box;
+                 transition: opacity var(--m-out) var(--m-ease), transform var(--m-out) var(--m-ease); }
+.m-arrow__head { transition: transform var(--m-out) var(--m-ease); }
+:is(a, button):hover > .m-arrow .m-arrow__stem,
+:is(a, button):focus-visible > .m-arrow .m-arrow__stem { opacity: 1; transform: none; transition-duration: var(--m-in); }
+:is(a, button):hover > .m-arrow .m-arrow__head,
+:is(a, button):focus-visible > .m-arrow .m-arrow__head { transform: translateX(3px); transition-duration: var(--m-in); }
+
+/* a pill that is a link (the line above a hero headline) */
+html:not([data-motion="off"]) a.pill { transition: background-color var(--m-out) var(--m-ease), border-color var(--m-out) var(--m-ease); }
+html:not([data-motion="off"]) a.pill:hover { background: color-mix(in oklab, var(--card) 90%, var(--ink)); border-color: var(--line-strong); transition-duration: var(--m-in); }
+
+/* ---------------------------------------------------------------- links: an underline that draws */
+/* .link and links in running text: a rest line, and the ink line draws left to right on hover and
+   leaves to the right. A link in a sentence rests on its own colour at 45% (about 3.3:1 on its
+   ground), so it reads as a link even when it is the same colour as the text (WCAG 1.4.1); .link
+   and .m-link carry an arrow or sit alone and rest on the faint hairline */
+html:not([data-motion="off"]) :is(.link, .m-link, p a:not([class]), .footer ul a, .footer .link) {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--m-rest, var(--line-strong)), var(--m-rest, var(--line-strong)));
+  background-repeat: no-repeat; background-size: 0% 1px, 100% 1px;
+  background-position: right 0 bottom 0, 0 100%;
+  transition: background-size var(--m-out) var(--m-ease), color var(--m-out) var(--m-ease);
+  padding-bottom: 2px;
+}
+/* set on its own rule: the shared rule above is (0,3,1) through :is(.footer .link) and would win */
+html:not([data-motion="off"]) p a:not([class]) { --m-rest: color-mix(in oklab, currentColor 45%, transparent); }
+html:not([data-motion="off"]) :is(.footer ul a, .m-link--bare):not(:hover, :focus-visible) { background-size: 0% 1px, 0% 1px; }
+html:not([data-motion="off"]) :is(.link, .m-link, p a:not([class]), .footer ul a, .footer .link):is(:hover, :focus-visible) {
+  background-size: 100% 1px, 100% 1px; background-position: left 0 bottom 0, 0 100%; transition-duration: var(--m-in);
+}
+/* the link's arrow is not underlined: the line runs under the words only */
+html:not([data-motion="off"]) .link { background-size: 0% 1px, calc(100% - 1em - var(--s-2)) 1px; }
+html:not([data-motion="off"]) .link:is(:hover, :focus-visible) { background-size: calc(100% - 1em - var(--s-2)) 1px, calc(100% - 1em - var(--s-2)) 1px; }
+html:not([data-motion="off"]) .link, html:not([data-motion="off"]) .link:is(:hover, :focus-visible) { background-position: 0 100%, 0 100%; }
+html:not([data-motion="off"]) .footer ul a:hover { color: var(--ink); }
+
