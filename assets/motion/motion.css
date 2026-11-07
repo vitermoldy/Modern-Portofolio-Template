@@ -153,3 +153,36 @@ html:not([data-motion="off"]) :is(a, button, input, select, textarea, summary, [
 }
 @keyframes m-focus { from { outline-offset: 6px; outline-color: transparent; } }
 
+/* ---------------------------------------------------------------- cards: a 2px lift */
+/* the card rises 2px, its border and shadow deepen; a card without its own box (.card--open) lifts
+   its panel. Never tilts, flips or follows the pointer */
+html:not([data-motion="off"]) .card:not(.card--open, .card--plan) {
+  transition: transform var(--m-out) var(--m-ease), border-color var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease);
+}
+html:not([data-motion="off"]) .card--open > .panel { transition: transform var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease); }
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) .card:not(.card--open, .card--plan, .m-nolift):hover {
+    transform: translateY(var(--m-lift));
+    border-color: color-mix(in oklab, var(--ink) 16%, transparent);
+    /* the shadow is deeper on a dark card (its lightness l): about .2 on white, .64 on near-black */
+    box-shadow: inset 0 1px 0 var(--c-hi, transparent), 0 1px 2px rgb(0 0 0 / .06),
+                0 14px 32px -18px oklch(from var(--card, #fff) 0 0 0 / calc(0.75 - l * 0.55));
+    transition-duration: 180ms;
+  }
+  html:not([data-motion="off"]) .card--open:not(.m-nolift):hover > .panel {
+    transform: translateY(var(--m-lift)); box-shadow: 0 14px 32px -18px oklch(from var(--bg, #fff) 0 0 0 / calc(0.75 - l * 0.55)); transition-duration: 180ms;
+  }
+}
+
+/* ---------------------------------------------------------------- photographs: 1.03 inside the mask */
+/* a photograph in a link or a linked card grows 3% inside its own mask (the frame, the tile, a .m-zoom wrapper);
+   the mask clips it, so the box never moves. .m-zoom is the hook for any other photograph: wrap it. */
+.m-zoom { overflow: clip; }
+html:not([data-motion="off"]) :is(.frame__img, .tile__media > img, .m-zoom img, .m-zoom > video) {
+  transition: transform var(--m-image) var(--m-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  html:not([data-motion="off"]) :is(a, .card:has(a), .m-zoom):hover :is(.frame__img, .tile__media > img),
+  html:not([data-motion="off"]) .m-zoom:hover :is(img, video) { transform: scale(1.03); }
+}
+
