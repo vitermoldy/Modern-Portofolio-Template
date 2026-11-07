@@ -94,3 +94,62 @@ html:not([data-motion="off"]) .link:is(:hover, :focus-visible) { background-size
 html:not([data-motion="off"]) .link, html:not([data-motion="off"]) .link:is(:hover, :focus-visible) { background-position: 0 100%, 0 100%; }
 html:not([data-motion="off"]) .footer ul a:hover { color: var(--ink); }
 
+/* ---------------------------------------------------------------- navigation */
+/* the nav words take no pill (ST-08, ST-11): system.css draws the underline under a word from the left on hover and focus, and
+   takes it away to the right; the page you are on keeps its still bar (system.css draws it, at the same inset) */
+@media (min-width: 1024px) {
+  /* the full-width panel: fades and settles 6px in 200ms, its columns follow 30ms apart; it closes
+     in 120ms. While one menu is open, the next word swaps the panel at once (motion.js .m-menu-open) */
+  html:not([data-motion="off"]) .nav__menu {
+    transform: translateY(-6px);
+    transition: opacity 120ms var(--m-ease), transform 120ms var(--m-ease), visibility 0s linear 120ms;
+  }
+  html:not([data-motion="off"]) .nav__item:is(:hover, :focus-within) > .nav__menu {
+    transition: opacity var(--m-panel) var(--m-ease) 150ms, transform var(--m-panel) var(--m-ease) 150ms, visibility 0s linear 150ms;
+  }
+  /* .m-menu-open comes on when the first panel starts to show (150ms): from then the next word swaps
+     the panel at once. Duration and delay go to 0, the properties stay listed, so the panel that is
+     still fading in finishes its own 200ms instead of snapping */
+  html:not([data-motion="off"]) .nav.m-menu-open .nav__menu,
+  html:not([data-motion="off"]) .nav.m-menu-open .nav__item:is(:hover, :focus-within) > .nav__menu { transition-duration: 0s; transition-delay: 0s; }
+  html:not([data-motion="off"]) .nav__menu .grid > * { opacity: 0; transform: translateY(4px); transition: opacity 100ms var(--m-ease), transform 100ms var(--m-ease); }
+  html:not([data-motion="off"]) .nav__item:is(:hover, :focus-within) > .nav__menu .grid > * {
+    opacity: 1; transform: none; transition: opacity 260ms var(--m-ease), transform 260ms var(--m-ease);
+    transition-delay: calc(170ms + var(--m-i, 0) * 30ms);
+  }
+  html:not([data-motion="off"]) .nav.m-menu-open .nav__item:is(:hover, :focus-within) > .nav__menu .grid > * { transition-delay: calc(var(--m-i, 0) * 30ms); }
+  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(2) { --m-i: 1; }
+  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(3) { --m-i: 2; }
+  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(4) { --m-i: 3; }
+  html:not([data-motion="off"]) .nav__menu .grid > :nth-child(n + 5) { --m-i: 4; }
+  html:not([data-motion="off"]) .menu-col a { transition: color var(--m-out) var(--m-ease); }
+  html:not([data-motion="off"]) .menu-col a:hover { transition-duration: var(--m-in); }
+  html:not([data-motion="off"]) .menu-card .panel { transition: border-color var(--m-out) var(--m-ease); }
+}
+/* the phone sheet slides in 8px and fades (system.js opens it) */
+@media (max-width: 1023px) {
+  html:not([data-motion="off"]) .nav.is-open .nav__links { transition: opacity var(--m-panel) var(--m-ease), transform var(--m-panel) var(--m-ease); }
+  @starting-style { html:not([data-motion="off"]) .nav.is-open .nav__links { opacity: 0; transform: translateY(-8px); } }
+}
+
+/* ---------------------------------------------------------------- tabs: the indicator slides */
+html:not([data-motion="off"]) .tabs.m-has-ind { position: relative; isolation: isolate; }
+html:not([data-motion="off"]) .tabs.m-has-ind .tab { position: relative; z-index: 1; }
+html:not([data-motion="off"]) .tabs.m-has-ind .tab[aria-selected="true"] { background: transparent; border-color: transparent; }
+.m-tab-ind {
+  position: absolute; left: 0; top: 0; z-index: 0; width: var(--w, 0px); height: var(--h, 0px);
+  border-radius: var(--r-btn); background: var(--ink); pointer-events: none;
+  transform: translate(var(--x, 0px), var(--y, 0px));
+  transition: transform var(--m-slide) var(--m-ease-io), width var(--m-slide) var(--m-ease-io), height var(--m-slide) var(--m-ease-io);
+}
+.m-tab-ind.is-jump { transition: none; }
+html:not([data-motion="off"]) .tab { transition: color var(--m-slide) var(--m-ease), border-color var(--m-out) var(--m-ease), background-color var(--m-out) var(--m-ease); }
+
+/* ---------------------------------------------------------------- focus: the ring settles in */
+/* only on the plain controls, never on a part of a loop, and not on an element that runs its own
+   animation (mark it .m-anim): an animation set here would replace that element's own */
+html:not([data-motion="off"]) :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible:not([data-m-loop] *, .m-anim, .loop-pause) {
+  animation: m-focus var(--m-out) var(--m-ease);
+}
+@keyframes m-focus { from { outline-offset: 6px; outline-color: transparent; } }
+
