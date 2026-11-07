@@ -1,0 +1,48 @@
+/*
+  taste-skill feature cards - the card, its inset panel and where a fragment sits on it.
+  The rules and their reasons are in references/cards.md. Link after system.css (it refines .card
+  and .panel there) or on its own with these tokens on a ground:
+    --bg (page), --card (one step off the page), --ink, --muted, --accent, --accent-ink,
+    --font-text, --font-mono
+  Fragments in a panel take --fx-* from .stage (set below from the same tokens).
+*/
+
+/* ---------------------------------------------------------------- the card */
+.card {
+  --c-r: 20px;                      /* card radius */
+  --c-pad: 28px;                    /* text padding = the panel's side inset */
+  --c-gap: 8px;                     /* an inset panel's margin; its radius is --c-r minus this */
+  --c-border: color-mix(in oklab, var(--ink) 8%, transparent);
+  --c-text: color-mix(in oklab, var(--ink) 84%, var(--card));   /* card text: the ink, a touch softer than titles */
+  --c-hi: oklch(from var(--card) 1 0 0 / clamp(0, calc(0.09 - l * 0.09), 0.07));
+  --c-sh: oklch(from var(--card) 0 0 0 / calc(0.07 - l * 0.04));
+  position: relative; display: flex; flex-direction: column; min-width: 0;
+  padding: var(--c-pad); border-radius: var(--c-r);
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--c-border);
+  box-shadow: inset 0 1px 0 var(--c-hi), 0 1px 2px var(--c-sh);
+  overflow: clip;
+  gap: 0;
+}
+@media (min-width: 1024px) { .card { --c-pad: 32px; } }
+@media (max-width: 639px) { .card { --c-r: 18px; --c-pad: 20px; } }
+
+.card > h3, .card__title {
+  margin: 0; font-family: var(--font-text); font-size: 18px; line-height: 26px; font-weight: 560;
+  letter-spacing: -0.012em; color: var(--ink); text-wrap: balance;
+}
+/* the two lines under a title: 16px in the ink (a touch softer than the title), never small grey text */
+.card > p, .card__text {
+  margin: 8px 0 0; font-size: 16px; line-height: 24px; color: var(--c-text);
+  max-width: 46ch; text-wrap: pretty;
+}
+/* two muted lines keep one height in a row so the panels line up; only where cards sit side by side
+   (below 1024px a row is one column, and the held line would be an empty gap) */
+@media (min-width: 1024px) { .card--row > p { min-height: 2lh; } }
+.card__link {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; width: max-content;
+  font-size: 15px; font-weight: 500; line-height: 22px; color: var(--ink); text-decoration: none;
+}
+.card__link svg { width: 14px; height: 14px; transition: transform 200ms cubic-bezier(.2,.7,.2,1); }
+.card__link:hover svg { transform: translateX(2px); }
+
