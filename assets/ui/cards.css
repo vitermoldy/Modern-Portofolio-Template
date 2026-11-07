@@ -46,3 +46,95 @@
 .card__link svg { width: 14px; height: 14px; transition: transform 200ms cubic-bezier(.2,.7,.2,1); }
 .card__link:hover svg { transform: translateX(2px); }
 
+/* ---------------------------------------------------------------- the inset panel */
+/* Default (x.ai): aligned with the text column and running off the card's bottom edge.
+   The effect canvas mounts on the panel (data-fx) and sits under everything in it. */
+.panel {
+  --p-r: 12px;
+  display: block; padding: 0;
+  --p-h: clamp(264px, 22vw + 8px, 340px);
+  position: relative; isolation: isolate; overflow: clip;
+  min-height: var(--p-h); flex: 1 0 auto;
+  border-radius: var(--p-r) var(--p-r) 0 0;
+  background: color-mix(in oklab, var(--ink) 4%, var(--card));
+}
+/* a panel with no effect mounted stands on the page's lit ground (system.css --ground-*: sand, sky,
+   sage, painting), never a grey a shade off the white UI on it: flat on kind other (cafes, shops,
+   studios); on a tech page (site-kind tech, software or gaming) a soft mesh of the ground's own tones,
+   the Figma tile, with no grain (grain or texture would be the page's one effect). A [data-fx] panel
+   draws its effect instead. */
+.panel:not([data-fx], .panel--device) { background: var(--ground-bg, #d9ccb7); }
+:root:has(meta[name="site-kind"]:is([content="tech"], [content="software"], [content="gaming"])) .panel:not([data-fx], .panel--device) {
+  background-color: var(--ground-bg, #d9ccb7);
+  background-image:
+    radial-gradient(70% 90% at 12% 0%, color-mix(in oklab, var(--ground-surface, #e9e0d2) 92%, white), transparent 70%),
+    radial-gradient(60% 80% at 100% 100%, color-mix(in oklab, var(--ground-accent, #a8794a) 34%, var(--ground-bg, #d9ccb7)), transparent 72%),
+    radial-gradient(50% 60% at 85% 10%, color-mix(in oklab, var(--ground-surface, #e9e0d2) 60%, transparent), transparent 70%);
+}
+.card > .panel { margin-top: 32px; margin-bottom: calc(-1 * var(--c-pad) - 1px); }
+.card > .panel--device { margin-top: 24px; }
+/* system.css spaces the text above a panel itself; here the panel carries the 32px */
+.card > :has(+ .panel) { margin-bottom: 0; }
+/* a crisp 1px edge over the ground and over any fragment it crops */
+.panel::after {
+  content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent), inset 0 1px 0 color-mix(in oklab, var(--ink) 4%, transparent);
+}
+/* the vignette that calms the ground where the fragment sits (--vx, --vy: its centre) */
+.panel::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; width: auto; padding: 0;
+  background: radial-gradient(ellipse 70% 62% at var(--vx, 50%) var(--vy, 62%),
+    color-mix(in oklab, var(--calm, var(--card)) var(--calm-k, 34%), transparent), transparent 72%);
+}
+/* inset on all sides by --c-gap; nested radius */
+.card > .panel--inset {
+  margin: 32px calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad));
+  border-radius: calc(var(--c-r) - var(--c-gap));
+}
+/* runs to the card's side and bottom edges (Figma's image band); the card's corners clip it */
+.card > .panel--flush {
+  margin: 32px calc(-1 * var(--c-pad) - 1px) calc(-1 * var(--c-pad) - 1px);
+  border-radius: 0;
+}
+.panel--flush::after { box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ink) 7%, transparent); }
+/* the panel on top, the caption under it (tall cards) */
+.card > .panel--top {
+  order: -1; margin: calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)) 24px;
+  border-radius: calc(var(--c-r) - var(--c-gap)); flex: none; min-height: 0; aspect-ratio: 1 / 1;
+}
+.panel--top.panel--wide { aspect-ratio: 4 / 3; }
+
+/* a device (x.ai's "Computer" card): a status row, then the ground as its screen. The row sits on the
+   card itself, not in a frame of its own, so the card stays two levels deep (card > picture > UI) */
+.panel--device { display: flex; padding: 0; flex-direction: column; background: none; overflow: visible; isolation: auto; border-radius: 0; }
+.panel--device::before, .panel--device::after { display: none; }
+.panel__bar {
+  display: flex; align-items: center; gap: 8px; height: 32px; margin-bottom: 12px; padding: 0; flex: none;
+  font: 500 13px/20px var(--font-text); color: var(--ink);
+}
+.panel__bar .muted { color: var(--muted); font-weight: 400; }
+.panel__bar .sp { flex: 1; }
+/* the bar's status is quiet ink: the accent belongs to the one status inside the screen */
+.panel__status {
+  display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 6px;
+  font: 500 var(--t-label)/1 var(--font-text); color: var(--ink);
+  background: color-mix(in oklab, var(--ink) 6%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
+}
+.panel__bar .ui-agent { width: 20px; height: 20px; --u-ink: var(--ink); --u-bg: var(--card); }
+/* a still dot: the bar's status never spins on its own (the moving part is the screen's one loop) */
+.panel__status i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.panel__screen {
+  position: relative; isolation: isolate; overflow: clip; flex: 1;
+  margin: 0; border-radius: var(--p-r) var(--p-r) 0 0;
+  background: color-mix(in oklab, var(--ink) 4%, var(--card));
+}
+.panel__screen::after {
+  content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none; border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 7%, transparent);
+}
+.panel__screen::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 62% at var(--vx, 50%) var(--vy, 70%),
+    color-mix(in oklab, var(--calm, #000) var(--calm-k, 30%), transparent), transparent 72%);
+}
+
