@@ -256,3 +256,15 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
   .nav--split .nav__links > .nav__item:nth-child(1 of .nav__item) > .nav__link[aria-current="true"]::after { left: 0; }
 }
 
+/* tablet (640 to 1023, held upright): the four work cards fit one tall screen, two by two, so neither
+   screen of a two-screen section is left half empty; the footer's two link columns share the row with no
+   gap to the right line */
+@media (min-width: 640px) and (max-width: 1023px) {
+  #work { --h: 1; }
+  #work.g2 > .wrap { display: flex; flex-direction: column; row-gap: var(--card-gap); }
+  /* 200px on a 1024px-tall screen, growing with taller ones (241px at 1180) */
+  #work .panel { --p-h: clamp(200px, 26svh - 66px, 300px); }
+  #work .mk-slots > li:nth-child(n+3) { display: none; }
+  #work .mk-bars { height: 96px; }
+  footer.closing .closing__links .footer__col { grid-column: auto / span 6; }
+}
