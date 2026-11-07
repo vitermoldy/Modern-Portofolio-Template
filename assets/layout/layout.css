@@ -507,3 +507,19 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
   .hero--centred .hero__window > .ly-piece { top: var(--s-4); width: calc(100% - 2 * var(--s-4)); left: var(--s-4); transform: none; }
 }
 
+/* ---------------------------------------------------------------- micro-interactions the heroes share */
+/* buttons keep the page's one hover (system.css, motion.css: the fill steps, the arrow moves 3px, the
+   press sinks 1px; no shadow on a button, ST-105); a text link draws its underline from the left */
+.ly-link { position: relative; font-weight: 500; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .28s var(--ease); }
+.ly-link:hover, .ly-link:focus-visible { background-size: 100% 1px; }
+
+/* steps inside a piece of UI (layout.js [data-ly-steps]): each arrives in place, nothing travels */
+[data-ly-steps] [data-step] { transition: opacity .35s var(--ease, ease), transform .35s var(--ease, ease); }
+[data-ly-steps] [data-step].is-off { opacity: 0; transform: translateY(6px); }
+
+/* ---------------------------------------------------------------- no entrance
+   the hero is set on its first frame on every kind: no entrance fade, rise or opening (MO-62) */
+@media (prefers-reduced-motion: reduce) {
+  .ly-live::before { animation: none; }
+  .ly-word > span, .ly-collage__set, .ly-letters .ly-l { transition: none; }
+}
