@@ -276,3 +276,15 @@ html[data-theme="light"] .theme-toggle__sun { display: none; }
   #process .frame--fill, #about .frame--fill { min-height: 160px; }
 }
 
+@media (max-width: 639px) {
+  #work .panel { --p-h: 152px; }
+  /* the heading's second sentence is the one line the phone drops, so the first two cards share a screen */
+  #work-h .muted { display: none; }
+  /* the second screen's two cards take the room the first screen's heading uses */
+  #work.g2 > .wrap > .grid:last-child .panel { --p-h: 200px; }
+  #process .frame--fill, #about .frame--fill { min-height: 120px; }
+  /* the phone screens show only the rows that fit whole on a phone */
+  .mk-phone--hero .mk-slots > li:nth-child(n+2),
+  #work .mk-slots > li:nth-child(n+3) { display: none; }
+  #work .mk-bars { height: 96px; }
+}
