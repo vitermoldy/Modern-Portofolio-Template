@@ -186,3 +186,81 @@ html:not([data-motion="off"]) :is(.frame__img, .tile__media > img, .m-zoom img, 
   html:not([data-motion="off"]) .m-zoom:hover :is(img, video) { transform: scale(1.03); }
 }
 
+/* ---------------------------------------------------------------- inputs, switches, checks */
+html:not([data-motion="off"]) .field :is(input, select, textarea), .m-input {
+  transition: border-color var(--m-out) var(--m-ease), box-shadow var(--m-out) var(--m-ease), background-color var(--m-out) var(--m-ease);
+}
+html:not([data-motion="off"]) .field :is(input, select, textarea):hover, .m-input:hover { border-color: color-mix(in oklab, var(--ink) 48%, transparent); }
+html:not([data-motion="off"]) .field :is(input, select, textarea):focus, .m-input:focus {
+  outline: none; border-color: var(--action);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--action) 20%, transparent); transition-duration: var(--m-in);
+}
+/* a switch: <button class="m-switch" role="switch" aria-checked="false" aria-label="..."></button>
+   (motion.js flips aria-checked on click unless the page handles it). The knob slides in 180ms and
+   stretches 4px while pressed. The off track is ink at 48% (3.3:1 or more against the knob and the
+   ground, the 3:1 a control needs) */
+.m-switch {
+  position: relative; flex: none; width: 40px; height: 24px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+  background: color-mix(in oklab, var(--ink) 48%, var(--bg));
+  transition: background-color 180ms var(--m-ease);
+}
+.m-switch::before {
+  content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 999px;
+  background: var(--bg); box-shadow: 0 1px 3px rgb(0 0 0 / .25);
+  transition: transform 180ms var(--m-ease), width var(--m-press) var(--m-ease);
+}
+.m-switch[aria-checked="true"] { background: var(--action); }
+.m-switch[aria-checked="true"]::before { transform: translateX(16px); background: var(--action-ink); }
+.m-switch:active::before { width: 22px; }
+.m-switch[aria-checked="true"]:active::before { transform: translateX(12px); }
+.m-switch:hover:not([aria-checked="true"]) { background: color-mix(in oklab, var(--ink) 58%, var(--bg)); }
+/* a check box: <input type="checkbox" class="m-check">, the tick draws in 160ms */
+.m-check {
+  appearance: none; -webkit-appearance: none; flex: none; margin: 0; width: 20px; height: 20px; border-radius: 6px; cursor: pointer;
+  border: 1px solid color-mix(in oklab, var(--ink) 48%, var(--bg)); background: var(--bg) no-repeat center / 14px 14px;
+  display: inline-grid; place-items: center;
+  transition: background-color var(--m-in) var(--m-ease), border-color var(--m-in) var(--m-ease);
+}
+.m-check::before {
+  content: ""; width: 10px; height: 6px; margin-top: -2px; border: solid var(--action-ink); border-width: 0 0 2px 2px;
+  transform: rotate(-45deg) scale(0); transform-origin: 50% 50%; transition: transform 160ms var(--m-ease);
+}
+.m-check:hover:not(:checked) { border-color: color-mix(in oklab, var(--ink) 64%, var(--bg)); }
+.m-check:checked { background-color: var(--action); border-color: var(--action); }
+.m-check:checked::before { transform: rotate(-45deg) scale(1); }
+
+/* ---------------------------------------------------------------- FAQ
+   Every answer stays open (ST-47, system.css): nothing here opens, closes or animates its height. */
+
+/* ---------------------------------------------------------------- numbers that tick once */
+[data-m-count] { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- loops inside a card's panel */
+/* a CSS loop the page writes inside [data-m-loop] runs one cycle in --m-cycle (2.5-4 s) and repeats
+   while on screen; motion.js pauses it off screen and restarts it on hover (motion.md) */
+[data-m-loop] { --m-cycle: 3.2s; --m-still: 0.6; --m-safe: 48px; }
+/* the pause button (a 32px disc 12px in from the bottom-right corner) gets a clear band: content in
+   the flow ends --m-safe (48px) above the bottom edge, and a fading stage dissolves above that band,
+   never under the button. Size the panel so the loop's subject sits above the fade */
+[data-m-loop]:not(:has(> .stage)) { padding-bottom: var(--m-safe); }
+[data-m-loop] > .stage:is(.stage--fade-b, .stage--fade-br) { bottom: var(--m-safe); }
+/* on a phone (as ui.js does) and under reduced motion a loop holds its finished picture: the frame at
+   --m-still (0-1) of the cycle, set on the loop where the picture is complete */
+@media (max-width: 639px) {
+  [data-m-loop] * { animation-duration: var(--m-cycle) !important; animation-delay: calc(-1 * var(--m-still) * var(--m-cycle)) !important;
+                    animation-play-state: paused !important; }
+}
+[data-m-loop].is-m-off *, [data-m-loop].is-m-paused * { animation-play-state: paused !important; }
+
+/* ---------------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="off"]) .card:hover, html:not([data-motion="off"]) .card--open:hover > .panel,
+  html:not([data-motion="off"]) :is(a, .card:has(a), .m-zoom):hover :is(.frame__img, .tile__media > img, img, video),
+  html:not([data-motion="off"]) .btn:is(:hover, :active), html:not([data-motion="off"]) :is(.btn--arrow, .link):hover::after,
+  :is(a, button):hover > .m-arrow :is(.m-arrow__head, .m-arrow__stem) { transform: none !important; }
+  .m-arrow__stem { opacity: 1; transform: none; }
+  html:not([data-motion="off"]) .nav__menu, html:not([data-motion="off"]) .nav__menu .grid > * { transform: none !important; }
+  html:not([data-motion="off"]) :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible { animation: none; }
+  [data-m-loop] * { animation-duration: var(--m-cycle) !important; animation-iteration-count: infinite !important;
+                    animation-delay: calc(-1 * var(--m-still) * var(--m-cycle)) !important; animation-play-state: paused !important; }
+}
